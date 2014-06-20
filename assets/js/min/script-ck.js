@@ -1,0 +1,1 @@
+!function(e){e(".meetup-reg-link").on("click","a",function(i){i.preventDefault();var n=e(this),s=n.closest("section");s.slideUp("fast"),s.siblings("section").slideDown("fast")})}(jQuery);
