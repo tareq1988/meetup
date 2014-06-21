@@ -9,6 +9,7 @@
             $attendies = meetup_get_attendies( get_the_id() );
 
             if ( $attendies ) {
+                $user_can_manage = current_user_can( 'manage_options' );
                 ?>
                 <ul class="meetup-attendee-list">
                     <?php foreach ($attendies as $user) { ?>
@@ -20,6 +21,10 @@
                             <div class="meetup-caption">
                                 <?php echo $user->display_name; ?>
                             </div>
+
+                            <?php if ( $user_can_manage ) { ?>
+                                <small><?php printf( __( '%d Seat', 'meetup' ), $user->seat ); ?></small>
+                            <?php } ?>
 
                         </li>
                     <?php } ?>
