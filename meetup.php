@@ -120,6 +120,7 @@ class WeDevs_Meetup {
         wp_enqueue_script( 'meetup-scripts', $asset_url . 'js/script.js', array( 'jquery' ), false, true );
         wp_localize_script( 'meetup-scripts', 'meetup', array(
             'ajaxurl' => admin_url( 'admin-ajax.php', 'relative' ),
+            'nonce' => wp_create_nonce( 'meetup-nonce' )
         ) );
     }
 
@@ -146,10 +147,8 @@ class WeDevs_Meetup {
         require_once dirname( __FILE__ ) . '/includes/rewrites.php';
 
         if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
-
+            require_once dirname( __FILE__ ) . '/includes/ajax.php';
         }
-
-        require_once dirname( __FILE__ ) . '/includes/ajax.php';
     }
 
     /**
