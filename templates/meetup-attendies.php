@@ -6,10 +6,26 @@
 
         <div class="meetup-attendies-listing">
             <?php
-            $attendies = get_post_meta( get_the_id(), 'attendies', true );
+            $attendies = meetup_get_attendies( get_the_id() );
 
             if ( $attendies ) {
-                var_dump($attendies);
+                ?>
+                <ul class="meetup-attendee-list">
+                    <?php foreach ($attendies as $user) { ?>
+                        <li>
+                            <div class="meetup-thumb">
+                                <?php echo get_avatar( $user->user_email, 64, false, $user->display_name ); ?>
+                            </div>
+
+                            <div class="meetup-caption">
+                                <?php echo $user->display_name; ?>
+                            </div>
+
+                        </li>
+                    <?php } ?>
+                </ul>
+
+                <?php
             } else {
                 _e( 'No Attendies found!', 'meetup' );
             }
