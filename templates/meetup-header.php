@@ -29,15 +29,27 @@
             <?php echo meetup_navigation(); ?>
         </div><!-- .meetup-nav -->
 
+        <?php
+        $capacity       = meetup_get_capacity( $post_id );
+        $booked         = meetup_num_booked_seat( $post_id );
+        $seat_available = meetup_num_available_seat( $post_id );
+        ?>
+
         <div class="meetup-actions-wrap">
-            <!--
             <ul class="meetup-actions">
-                <li><a class="meetup-button-going" href="#"><i class="fa fa-plus-square-o"></i> Join</a></li>
-                <li><a class="meetup-button-maybe" href="#">Maybe</a></li>
-                <li><a class="meetup-button-notgoing" href="#">Decline</a></li>
-                <li><a class="meetup-button-actions" href="#">...</a></li>
+                <li>
+                    <div class="meetup-count"><?php echo $capacity; ?></div>
+                    <div class="meetup-span-text"><?php _e( 'Capacity', 'meetup' ); ?></div>
+                </li>
+                <li>
+                    <div class="meetup-count"><?php echo $booked; ?></div>
+                    <div class="meetup-span-text"><?php _e( 'Booked', 'meetup' ); ?></div>
+                </li>
+                <li>
+                    <div class="meetup-count"><?php echo $seat_available; ?></div>
+                    <div class="meetup-span-text"><?php _e( 'Available', 'meetup' ); ?></div>
+                </li>
             </ul>
-             -->
         </div><!-- .meetup-actions-wrap -->
     </div><!-- .meetup-nav-wrap -->
 
