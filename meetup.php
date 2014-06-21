@@ -101,11 +101,13 @@ class WeDevs_Meetup {
         $sql = "CREATE TABLE IF NOT EXISTS $table_name (
             `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
             `user_id` bigint(20) DEFAULT NULL,
-            `meetup_id` int(11) DEFAULT NULL,
+            `meetup_id` bigint(20) DEFAULT NULL,
             `seat` int(11) DEFAULT NULL,
             `status` tinyint(1) DEFAULT '1',
             `created` timestamp NULL DEFAULT NULL,
-            PRIMARY KEY (`id`)
+            PRIMARY KEY (`id`),
+            KEY `user_id` (`user_id`),
+            KEY `meetup_id` (`meetup_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
 
         require_once ABSPATH . 'wp-admin/includes/upgrade.php';
