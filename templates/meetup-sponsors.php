@@ -12,7 +12,7 @@
             if ( !empty( $details ) ) {
                 ?>
                 <div class="meetup-sponsor-text">
-                    <p><?php echo wp_kses_post( $details ); ?></p>
+                    <p><?php echo wpautop( $details ); ?></p>
                 </div>
                 <?php
             }
