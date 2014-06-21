@@ -89,7 +89,7 @@ class WeDevs_Meetup {
     }
 
     /**
-     * Cctivation function
+     * Activation function
      *
      * Creates our table when installing the plugin
      */
