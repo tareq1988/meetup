@@ -49,7 +49,7 @@ if ( date( 'dmY', $from ) !== date( 'dmY', $to ) ) {
                                         </select>
                                     </span>
 
-                                    <button class="meetup-fb-button" href="#">
+                                    <button class="meetup-fb-button" data-meetup-id="<?php echo $post_id; ?>">
                                         <i class="fa fa-facebook-square"></i>
                                         <span><?php _e( 'Connect to Register', 'meetup' ); ?></span>
                                     </button>
@@ -57,6 +57,49 @@ if ( date( 'dmY', $from ) !== date( 'dmY', $to ) ) {
                                     <div class="meetup-reg-link">
                                         <a href="#"><?php _e( 'or, register with email', 'meetup' ); ?></a>
                                     </div>
+
+<script type="text/javascript">
+    window.fbAsyncInit = function() {
+        FB.init({
+            appId      : '150649678345378',
+            cookie     : true,  // enable cookies to allow the server to access
+            xfbml      : true,  // parse social plugins on this page
+            version    : 'v2.0' // use version 2.0
+        });
+    };
+
+    jQuery('.meetup-fb-button').on('click', function(e) {
+        e.preventDefault();
+
+        var self = jQuery(this);
+
+        FB.login(function(response){
+            if ( response.status === 'connected' ) {
+                FB.api('/me', function(response) {
+
+                    response.action = 'meetup_fb_register';
+                    response.seat = jQuery('#meetup-fb-join-set').val();
+                    response.meetup_id = self.data('meetup-id');
+
+                    jQuery.post(meetup.ajaxurl, response, function(resp) {
+                        alert( resp.data.message );
+                        window.location.reload();
+                    });
+                });
+            }
+        }, {scope: 'email'});
+    });
+
+    // Load the SDK asynchronously
+    (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = "//connect.facebook.net/en_US/sdk.js";
+        fjs.parentNode.insertBefore(js, fjs);
+    }(document, 'script', 'facebook-jssdk'));
+</script>
+
                                 </section><!-- .meetup-fb-register -->
 
                                 <section class="meetup-site-join meetup-join-form">
