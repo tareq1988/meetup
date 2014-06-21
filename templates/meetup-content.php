@@ -58,10 +58,15 @@ if ( date( 'dmY', $from ) !== date( 'dmY', $to ) ) {
                                         <a href="#"><?php _e( 'or, register with email', 'meetup' ); ?></a>
                                     </div>
 
+<?php
+$fb_option = get_option( 'meetup_facebook' );
+$fb_api_key = isset( $fb_option['app_id'] ) ? $fb_option['app_id'] : '';
+?>
+
 <script type="text/javascript">
     window.fbAsyncInit = function() {
         FB.init({
-            appId      : '150649678345378',
+            appId      : '<?php echo $fb_api_key; ?>',
             cookie     : true,  // enable cookies to allow the server to access
             xfbml      : true,  // parse social plugins on this page
             version    : 'v2.0' // use version 2.0

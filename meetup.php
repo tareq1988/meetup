@@ -140,6 +140,7 @@ class WeDevs_Meetup {
             }
 
             require_once dirname( __FILE__ ) . '/includes/metadata.php';
+            require_once dirname( __FILE__ ) . '/includes/settings.php';
         }
 
         require_once dirname( __FILE__ ) . '/includes/functions.php';
