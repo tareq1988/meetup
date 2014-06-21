@@ -56,11 +56,14 @@ function meetup_book_seat( $user_id, $meetup_id, $num_of_seat = 1 ) {
             array( '%d' ),
             array( '%d', '%d' )
         );
+
+        do_action( 'meetup_booking_update', $meetup_id, $user_id, $prev_booking->id );
+
     } else {
         // create new booking
 
         if ( ! meetup_is_seat_available( $meetup_id, $num_of_seat ) ) {
-            return new WP_Error( 'no-seat', __( 'No seat available', 'meetup' ) );
+            return new WP_Error( 'no-seat', __( 'Sorry, your required number of seat(s) are not available.', 'meetup' ) );
         }
 
         $wpdb->insert( $wpdb->prefix . 'meetup_users',
@@ -77,6 +80,10 @@ function meetup_book_seat( $user_id, $meetup_id, $num_of_seat = 1 ) {
                 '%s'
             )
         );
+
+        $booking_id = $wpdb->insert_id;
+
+        do_action( 'meetup_booking_new', $meetup_id, $user_id, $booking_id );
     }
 
     return true;
@@ -91,10 +98,27 @@ function meetup_book_seat( $user_id, $meetup_id, $num_of_seat = 1 ) {
 function meetup_num_booked_seat( $meetup_id ) {
     global $wpdb;
 
-    $sql   = "SELECT SUM(seat) FROM {$wpdb->prefix}meetup_users WHERE meetup_id = %d AND status = 1";
-    $count = (int) $wpdb->get_var( $wpdb->prepare( $sql, $meetup_id ) );
+    $cache_key = 'num-seat-' . $meetup_id;
+    $count = wp_cache_get( $cache_key, 'meetup' );
+
+    if ( false === $count ) {
+        $sql   = "SELECT SUM(seat) FROM {$wpdb->prefix}meetup_users WHERE meetup_id = %d AND status = 1";
+        $count = (int) $wpdb->get_var( $wpdb->prepare( $sql, $meetup_id ) );
+
+        wp_cache_set( $cache_key, $count, 'meetup' );
+    }
 
     return $count;
+}
+
+/**
+ * Get the capacity of the meetup
+ *
+ * @param  int $meetup_id
+ * @return int
+ */
+function meetup_get_capacity( $meetup_id ) {
+    return (int) get_post_meta( $meetup_id, 'capacity', true );
 }
 
 /**
@@ -104,7 +128,7 @@ function meetup_num_booked_seat( $meetup_id ) {
  * @return int
  */
 function meetup_num_available_seat( $meetup_id ) {
-    $capacity = (int) get_post_meta( $meetup_id, 'capacity', true );
+    $capacity = meetup_get_capacity( $meetup_id );
     $filled   = meetup_num_booked_seat( $meetup_id );
 
     return $capacity - $filled;
@@ -125,4 +149,60 @@ function meetup_is_seat_available( $meetup_id, $num_of_seat = 1 ) {
     }
 
     return false;
+}
+
+/**
+ * Cancel a seat booking
+ *
+ * @param  int $user_id
+ * @param  int $meetup_id
+ * @param  int $booking_id
+ * @return void
+ */
+function meetup_cancel_seat( $user_id, $meetup_id, $booking_id ) {
+    global $wpdb;
+
+    $wpdb->delete( $wpdb->prefix . 'meetup_users',
+        array(
+            'user_id'   => $user_id,
+            'meetup_id' => $meetup_id,
+            'id'        => $booking_id
+        ),
+        array( '%d', '%d', '%d' )
+    );
+
+    do_action( 'meetup_booking_delete', $meetup_id, $user_id, $booking_id );
+}
+
+/**
+ * Flush cache for meetup
+ *
+ * @param  int $meetup_id
+ * @return void
+ */
+function meetup_flash_cache( $meetup_id ) {
+    $cache_key = 'num-seat-' . $meetup_id;
+
+    wp_cache_delete( $cache_key, 'meetup' );
+}
+
+add_action( 'meetup_booking_new', 'meetup_flash_cache' );
+add_action( 'meetup_booking_update', 'meetup_flash_cache' );
+add_action( 'meetup_booking_delete', 'meetup_flash_cache' );
+
+/**
+ * Get meetup attendies
+ *
+ * @param  int $meetup_id
+ * @return object
+ */
+function meetup_get_attendies( $meetup_id ) {
+    global $wpdb;
+
+    $sql   = "SELECT mu.user_id, mu.seat, u.display_name, u.user_email FROM {$wpdb->prefix}meetup_users mu
+            LEFT JOIN $wpdb->users u ON u.ID = mu.user_id
+            WHERE meetup_id = %d AND status = 1";
+    $users = $wpdb->get_results( $wpdb->prepare( $sql, $meetup_id ) );
+
+    return $users;
 }

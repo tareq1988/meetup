@@ -2,15 +2,27 @@
 
 /**
  * Ajax handler
+ *
+ * @package meetup
+ * @author Tareq Hasan>
  */
 class WeDevs_Meetup_Ajax {
 
+    /**
+     * Hook to suitable actions and filters
+     *
+     * @return void
+     */
     function __construct() {
         add_action( 'wp_ajax_nopriv_meetup_site_new_join', array($this, 'guest_site_registration') );
+
+        add_action( 'wp_ajax_meetup_user_join', array($this, 'user_booking') );
+        add_action( 'wp_ajax_meetup_booking_cancel', array($this, 'cancel_booking') );
     }
 
     /**
      * Guess a suitable username for registration based on email address
+     *
      * @param string $email email address
      * @return string username
      */
@@ -31,7 +43,24 @@ class WeDevs_Meetup_Ajax {
     }
 
     /**
-     * Perform guest registration
+     * Check booking limit permission
+     *
+     * @param  int $meetup_id
+     * @param  int $seat
+     */
+    function check_booking_limit( $meetup_id, $seat ) {
+        $book_limit = (int) get_post_meta( $meetup_id, 'book_limit', true );
+
+        if ( $seat > $book_limit ) {
+            wp_send_json_error( array(
+                'type'    => 'error',
+                'message' => __( 'Please enter a valid seat number', 'meetup' )
+            ) );
+        }
+    }
+
+    /**
+     * Perform guest registration and booking
      *
      * @return void
      */
@@ -59,6 +88,9 @@ class WeDevs_Meetup_Ajax {
                 'url'     => wp_login_url( get_permalink( $meetup_id ) )
             ) );
         }
+
+        // may be trying to book more than permitted?
+        $this->check_booking_limit( $meetup_id, $seat );
 
         $username = $this->guess_username( $email );
         $user_pass = wp_generate_password( 12, false );
@@ -115,6 +147,48 @@ class WeDevs_Meetup_Ajax {
             ) );
         }
 
+        exit;
+    }
+
+    /**
+     * Perform booking for a logged in user
+     *
+     * @return void
+     */
+    function user_booking() {
+        check_ajax_referer( 'meetup-site-join-form' );
+
+        $posted    = $_POST;
+        $user_id   = get_current_user_id();
+        $meetup_id = (int) $posted['meetup_id'];
+        $seat      = (int) $posted['meetup-fb-join-seat'];
+
+        // may be trying to book more than permitted?
+        $this->check_booking_limit( $meetup_id, $seat );
+
+        $booking = meetup_book_seat( $user_id, $meetup_id, $seat );
+
+        if ( is_wp_error( $booking ) ) {
+            wp_send_json_error( $booking->get_error_message() );
+        }
+
+        wp_send_json_success( __( 'You have successfully booked the seat!', 'meetup' ) );
+    }
+
+    /**
+     * Cancel a meetup booking
+     *
+     * @return void
+     */
+    function cancel_booking() {
+        check_ajax_referer( 'meetup-nonce' );
+
+        $user_id    = get_current_user_id();
+        $meetup_id  = (int) $_POST['meetup_id'];
+        $booking_id = (int) $_POST['booking_id'];
+
+        meetup_cancel_seat( $user_id, $meetup_id, $booking_id );
+        wp_send_json_success( __( 'Your booking has been cancelled!', 'meetup' ) );
         exit;
     }
 }
