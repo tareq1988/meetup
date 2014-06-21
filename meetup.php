@@ -60,6 +60,8 @@ class WeDevs_Meetup {
 
         $this->file_includes();
 
+        register_activation_hook( __FILE__, array( $this, 'activate' ) );
+
         // Localize our plugin
         add_action( 'init', array( $this, 'localization_setup' ) );
         add_action( 'init', array( $this, 'register_post_type' ) );
@@ -84,6 +86,30 @@ class WeDevs_Meetup {
         }
 
         return $instance;
+    }
+
+    /**
+     * Cctivation function
+     *
+     * Creates our table when installing the plugin
+     */
+    public function activate() {
+        global $wpdb;
+
+        $table_name = $wpdb->prefix . 'meetup_users';
+
+        $sql = "CREATE TABLE IF NOT EXISTS $table_name (
+            `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+            `user_id` bigint(20) DEFAULT NULL,
+            `meetup_id` int(11) DEFAULT NULL,
+            `seat` int(11) DEFAULT NULL,
+            `status` tinyint(1) DEFAULT '1',
+            `created` timestamp NULL DEFAULT NULL,
+            PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
+
+        require_once ABSPATH . 'wp-admin/includes/upgrade.php';
+        dbDelta( $sql );
     }
 
     /**
@@ -236,7 +262,7 @@ class WeDevs_Meetup {
      * this to the theme (containing a meetup() inside) this will be used for all
      * meetup templates.
      *
-     * @param mixed $template
+     * @param mixed   $template
      * @return string
      */
     public function template_loader( $template ) {
