@@ -58,8 +58,6 @@ class WeDevs_Meetup_Admin {
     function plugin_page() {
         ?>
         <div class="wrap">
-            <h2><?php _e( 'Settings', 'meetup' ); ?></h2>
-
             <?php
             settings_errors();
 
