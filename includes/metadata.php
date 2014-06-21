@@ -42,6 +42,13 @@ function meetup_cmb_fields( $meta_boxes = array() ) {
             'name' => __( 'Registration End Date', 'meetup' ),
             'type' => 'datetime_unix',
         ),
+        array(
+            'id'   => 'book_limit',
+            'name' => __( 'Per User Booking Limit', 'meetup' ),
+            'type' => 'text',
+            'desc' => __( 'How many seats a user can book?', 'meetup' ),
+            'default' => 1
+        ),
     );
 
     $speaker_fields[] = array(
