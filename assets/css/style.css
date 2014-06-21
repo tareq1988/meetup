@@ -178,7 +178,7 @@
   width: 90%;
 }
 .meetup-content-wrap .meetup-join-event .meetup-join-form select {
-  padding: 15px;
+  padding: 2px;
   border: 1px solid #ccc;
   font-size: 18px;
   width: 70px;
@@ -214,6 +214,9 @@
   margin-bottom: 25px;
   text-align: center;
 }
+.meetup-content-wrap .meetup-join-event .meetup-loggedin-join {
+  text-align: center;
+}
 .meetup-content-wrap .meetup-join-event h3 {
   text-align: center;
   margin-bottom: 20px;
@@ -227,6 +230,7 @@
 .meetup-content-wrap .meetup-join-event .meetup-reg-ends {
   border-top: 1px solid #eee;
   padding-top: 15px;
+  margin-top: 15px;
 }
 .meetup-content-wrap .meetup-form-half {
   float: left;

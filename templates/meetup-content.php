@@ -14,9 +14,6 @@ $current_time = time();
 if ( date( 'dmY', $from ) !== date( 'dmY', $to ) ) {
     $same_day = false;
 }
-
-var_dump($from, $to, $capacity, $address, $reg_starts, $reg_ends);
-var_dump($same_day);
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
@@ -37,64 +34,99 @@ var_dump($same_day);
                     <?php if ( $current_time < $reg_ends ) { ?>
                         <h3><?php _e( 'Join the Meetup', 'meetup' ); ?></h3>
 
-                        <section class="meetup-fb-register meetup-join-form">
+                        <?php if ( ! is_user_logged_in() ) { ?>
 
-                            <span class="meetup-select-box">
-                                <select name="meetup-fb-join-seat" id="meetup-fb-join-set">
-                                    <?php for ($i = 1; $i < 10; $i++) { ?>
-                                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-                                    <?php } ?>
-                                </select>
-                            </span>
+                            <section class="meetup-fb-register meetup-join-form">
 
-                            <button class="meetup-fb-button" href="#">
-                                <i class="fa fa-facebook-square"></i>
-                                <span><?php _e( 'Connect to Register', 'meetup' ); ?></span>
-                            </button>
-
-                            <div class="meetup-reg-link">
-                                <a href="#">or, register with email</a>
-                            </div>
-                        </section><!-- .meetup-fb-register -->
-
-                        <section class="meetup-site-join meetup-join-form">
-
-                            <div class="meetup-reg-link">
-                                <a href="#">Register with Facebook</a>
-                            </div>
-
-                            <form action="" method="post" id="meetup-site-join-form">
-                                <div class="meetup-form-row meetup-col-wrap">
-                                    <div class="meetup-form-half">
-                                        <label for="meetup_fname">First Name</label>
-                                        <input type="text" name="meetup_fname" id="meetup_fname" value="" placeholder="First Name">
-                                    </div>
-
-                                    <div class="meetup-form-half">
-                                        <label for="meetup_lname">Last Name</label>
-                                        <input type="text" name="meetup_lname" id="meetup_lname" value="" placeholder="Last Name">
-                                    </div>
-
-                                </div>
-
-                                <div class="meetup-form-row meetup-email-wrap">
-                                    <label for="meetup_email">Email Address</label>
-                                    <input type="email" name="meetup_email" id="meetup_email" value="" placeholder="you@example.com">
-                                </div>
-
-                                <div class="meetup-form-row">
-
+                                <span class="meetup-select-box">
                                     <select name="meetup-fb-join-seat" id="meetup-fb-join-set">
                                         <?php for ($i = 1; $i < 10; $i++) { ?>
                                             <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
                                         <?php } ?>
                                     </select>
+                                </span>
 
-                                    <input type="submit" name="meetup_submit" value="<?php _e( 'Book My Seat', 'meetup' ); ?>">
+                                <button class="meetup-fb-button" href="#">
+                                    <i class="fa fa-facebook-square"></i>
+                                    <span><?php _e( 'Connect to Register', 'meetup' ); ?></span>
+                                </button>
+
+                                <div class="meetup-reg-link">
+                                    <a href="#">or, register with email</a>
+                                </div>
+                            </section><!-- .meetup-fb-register -->
+
+                            <section class="meetup-site-join meetup-join-form">
+
+                                <div class="meetup-reg-link">
+                                    <a href="#">Register with Facebook</a>
                                 </div>
 
-                            </form>
-                        </section><!-- .meetup-site-join -->
+                                <form action="" method="post" id="meetup-site-join-form">
+                                    <div class="meetup-form-row meetup-col-wrap">
+                                        <div class="meetup-form-half">
+                                            <label for="meetup_fname">First Name</label>
+                                            <input type="text" name="meetup_fname" id="meetup_fname" value="" placeholder="<?php esc_attr_e( 'First Name', 'meetup' ); ?>" required>
+                                        </div>
+
+                                        <div class="meetup-form-half">
+                                            <label for="meetup_lname">Last Name</label>
+                                            <input type="text" name="meetup_lname" id="meetup_lname" value="" placeholder="<?php esc_attr_e( 'Last Name', 'meetup' ); ?>" required>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="meetup-form-row meetup-email-wrap">
+                                        <label for="meetup_email">Email Address</label>
+                                        <input type="email" name="meetup_email" id="meetup_email" value="" placeholder="you@example.com" required>
+                                    </div>
+
+                                    <div class="meetup-form-row">
+
+                                        <select name="meetup-fb-join-seat" id="meetup-fb-join-set">
+                                            <?php for ($i = 1; $i < 10; $i++) { ?>
+                                                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                                            <?php } ?>
+                                        </select>
+
+                                        <?php wp_nonce_field( 'meetup-site-join-form' ); ?>
+                                        <input type="hidden" name="meetup_id" value="<?php echo $post_id; ?>">
+                                        <input type="hidden" name="action" value="meetup_site_new_join">
+
+                                        <input type="submit" name="meetup_submit" value="<?php _e( 'Book My Seat', 'meetup' ); ?>">
+                                    </div>
+
+                                </form>
+                            </section><!-- .meetup-site-join -->
+
+                        <?php } else { ?>
+
+                            <?php $has_booked = meetup_has_user_booked( get_current_user_id(), $post_id ); ?>
+
+                            <?php if ( ! $has_booked ) { ?>
+                                <section class="meetup-loggedin-join meetup-join-form">
+
+                                    <form action="" method="post" id="meetup-site-join-form">
+
+                                        <select name="meetup-fb-join-seat" id="meetup-fb-join-set">
+                                            <?php for ($i = 1; $i < 10; $i++) { ?>
+                                                <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                                            <?php } ?>
+                                        </select>
+
+                                        <input type="submit" name="meetup_submit" value="<?php _e( 'Book My Seat', 'meetup' ); ?>">
+
+                                    </form>
+                                </section>
+                            <?php } else { ?>
+
+                                <p>
+                                    <?php printf( __( 'Congratulations! You\'ve booked %d seat(s).', 'meetup' ), $has_booked->seat ); ?>
+                                </p>
+
+                            <?php } ?>
+
+                        <?php } ?>
 
                         <div class="meetup-reg-ends">
                             <strong><?php _e( 'Registration Ends:', 'meetup' ); ?></strong> <?php echo date_i18n( 'F j, Y g:ia', $reg_ends ); ?>

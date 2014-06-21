@@ -118,15 +118,9 @@ class WeDevs_Meetup {
          * All scripts goes here
          */
         wp_enqueue_script( 'meetup-scripts', $asset_url . 'js/script.js', array( 'jquery' ), false, true );
-
-
-        /**
-         * Example for setting up text strings from Javascript files for localization
-         *
-         * Uncomment line below and replace with proper localization variables.
-         */
-        // $translation_array = array( 'some_string' => __( 'Some string to translate', 'meetup' ), 'a_value' => '10' );
-        // wp_localize_script( 'base-plugin-scripts', 'meetup', $translation_array ) );
+        wp_localize_script( 'meetup-scripts', 'meetup', array(
+            'ajaxurl' => admin_url( 'admin-ajax.php', 'relative' ),
+        ) );
     }
 
     /**
@@ -148,7 +142,14 @@ class WeDevs_Meetup {
         }
 
         require_once dirname( __FILE__ ) . '/includes/functions.php';
+        require_once dirname( __FILE__ ) . '/includes/booking.php';
         require_once dirname( __FILE__ ) . '/includes/rewrites.php';
+
+        if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
+
+        }
+
+        require_once dirname( __FILE__ ) . '/includes/ajax.php';
     }
 
     /**

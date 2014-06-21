@@ -5,7 +5,15 @@
     <div class="meetup-content-wrap">
 
         <div class="meetup-attendies-listing">
-            Attendies
+            <?php
+            $attendies = get_post_meta( get_the_id(), 'attendies', true );
+
+            if ( $attendies ) {
+                var_dump($attendies);
+            } else {
+                _e( 'No Attendies found!', 'meetup' );
+            }
+            ?>
         </div>
 
     </div>
