@@ -1,14 +1,20 @@
 <header class="meetup-entry-header">
     <div class="meetup-cover-wrap">
         <div class="meetup-cover">
-            <img src="https://fbcdn-sphotos-c-a.akamaihd.net/hphotos-ak-xpf1/t1.0-9/10388118_10152463235314291_72663381596881020_n.jpg" alt="">
+            <?php if ( has_post_thumbnail() ) {
+                the_post_thumbnail( 'full' );
+            } ?>
         </div>
 
         <div class="meetup-event-header">
             <div class="meetup-date-title-wrap">
                 <div class="meetup-date-wrap">
-                    <div class="meetup-month">JUN</div>
-                    <div class="meetup-date">28</div>
+                    <?php
+                    $post_id = get_the_id();
+                    $from    = get_post_meta( $post_id, 'from', true );
+                    ?>
+                    <div class="meetup-month"><?php echo date_i18n( 'M', $from ); ?></div>
+                    <div class="meetup-date"><?php echo date_i18n( 'j', $from ); ?></div>
                 </div>
 
                 <div class="meetup-title">

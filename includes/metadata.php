@@ -1,35 +1,12 @@
 <?php
 
 /**
- * User dropdown depending on a user role
- *
- * @param string $role user capability
- * @return array
- */
-function meetup_users_dropdown( $role = false ) {
-    $items = array();
-    $users = get_users();
-
-    foreach ($users as $user) {
-        //check role
-        if ( $role && user_can( $user->ID, $role ) ) {
-            $items[$user->ID] = $user->display_name;
-        } else if ( !$role ) {
-            $items[$user->ID] = $user->display_name;
-        }
-    }
-
-    return $items;
-}
-
-/**
  * Meta fields for meetup
  *
  * @param  array  $meta_boxes
  * @return array
  */
 function meetup_cmb_fields( $meta_boxes = array() ) {
-    $user_dropdown = meetup_users_dropdown( 'delete_others_pages' );
 
     $meetup_fields = array(
         array(
@@ -44,7 +21,7 @@ function meetup_cmb_fields( $meta_boxes = array() ) {
         ),
         array(
             'id'      => 'capacity',
-            'name'    => __( 'Limit', 'meetup' ),
+            'name'    => __( 'Capacity', 'meetup' ),
             'type'    => 'text',
             'desc'    => __( 'How many guests can join this meetup?', 'meetup' ),
             'default' => 50
@@ -101,31 +78,81 @@ function meetup_cmb_fields( $meta_boxes = array() ) {
                 'type' => 'textarea',
                 'desc' => __( 'Some details about the speaker', 'meetup' ),
             ),
+            array(
+                'id'   => 'slide_url',
+                'name' => __( 'Slide URL', 'meetup' ),
+                'type' => 'url',
+                'desc' => __( 'Website url of the slide', 'meetup' ),
+            ),
         ),
     );
 
-    $sponsor_fields[] = array(
-        'id'         => 'sponsors',
-        'name'       => __( 'Sponsors', 'meetup' ),
-        'type'       => 'group',
-        'repeatable' => true,
-        'fields'     => array(
-            array(
-                'id'   => 'name',
-                'name' => __( 'Sponsor Name', 'meetup' ),
-                'type' => 'text',
+    $sponsor_fields = array(
+        array(
+            'id'   => 'sponsor_details',
+            'name' => __( 'Details', 'meetup' ),
+            'type' => 'textarea',
+            'desc' => __( 'Some texts about sponsors', 'meetup' ),
+        ),
+        array(
+            'id'         => 'sponsors',
+            'name'       => __( 'Sponsors', 'meetup' ),
+            'type'       => 'group',
+            'repeatable' => true,
+            'fields'     => array(
+                array(
+                    'id'   => 'name',
+                    'name' => __( 'Sponsor Name', 'meetup' ),
+                    'type' => 'text',
+                ),
+                array(
+                    'id'   => 'logo',
+                    'name' => __( 'Sponsor Logo', 'meetup' ),
+                    'type' => 'image',
+                ),
+                array(
+                    'id'   => 'details',
+                    'name' => __( 'Sponsor Details', 'meetup' ),
+                    'type' => 'wysiwyg',
+                    'desc' => __( 'Additional details about the sponsor', 'meetup' ),
+                ),
             ),
-            array(
-                'id'   => 'logo',
-                'name' => __( 'Sponsor Logo', 'meetup' ),
-                'type' => 'image',
+        )
+    );
+
+    $schedule = array(
+        array(
+            'id'         => 'schedule',
+            'name'       => __( 'Time Entry', 'meetup' ),
+            'type'       => 'group',
+            'repeatable' => true,
+            'fields'     => array(
+                array(
+                    'id'   => 'time',
+                    'name' => __( 'Time', 'meetup' ),
+                    'type' => 'datetime_unix',
+                ),
+                array(
+                    'id'   => 'agenda',
+                    'name' => __( 'Agenda', 'meetup' ),
+                    'type' => 'text',
+                ),
+                array(
+                    'id'   => 'comments',
+                    'name' => __( 'Comments', 'meetup' ),
+                    'type' => 'textarea',
+                    'desc' => __( 'Additional details about the schedule', 'meetup' ),
+                ),
             ),
-            array(
-                'id'   => 'details',
-                'name' => __( 'Sponsor Details', 'meetup' ),
-                'type' => 'wysiwyg',
-                'desc' => __( 'Additional details about the sponsor', 'meetup' ),
-            ),
+        )
+    );
+
+    $gallery = array(
+        array(
+            'id'   => 'gallery',
+            'name' => __( 'Gallery Images', 'meetup' ),
+            'type' => 'image',
+            'repeatable' => true,
         ),
     );
 
@@ -145,6 +172,18 @@ function meetup_cmb_fields( $meta_boxes = array() ) {
         'title'  => __( 'Sponsor Details', 'meetup' ),
         'pages'  => 'meetup',
         'fields' => $sponsor_fields
+    );
+
+    $meta_boxes[] = array(
+        'title'  => __( 'Schedule', 'meetup' ),
+        'pages'  => 'meetup',
+        'fields' => $schedule
+    );
+
+    $meta_boxes[] = array(
+        'title'  => __( 'Image Gallery', 'meetup' ),
+        'pages'  => 'meetup',
+        'fields' => $gallery
     );
 
     return $meta_boxes;

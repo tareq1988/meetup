@@ -118,6 +118,19 @@ function meetup_is_speaker_page() {
 }
 
 /**
+ * Check if the current page is schedule page
+ *
+ * @return boolean
+ */
+function meetup_is_schedule_page() {
+    if ( get_post_type() == 'meetup' && get_query_var( 'schedule' ) == 'yes' ) {
+        return true;
+    }
+
+    return false;
+}
+
+/**
  * Check if the current page is sponsor page
  *
  * @return boolean
@@ -169,23 +182,23 @@ function meetup_get_navigation() {
         ),
         'speakers' => array(
             'title' => __( 'Speakers', 'meetup' ),
-            'link' => trailingslashit( get_permalink() ) . 'speakers',
+            'link' => trailingslashit( get_permalink() ) . 'speakers/',
         ),
         'schedule' => array(
             'title' => __( 'Schedule', 'meetup' ),
-            'link' => trailingslashit( get_permalink() ) . 'schedule',
+            'link' => trailingslashit( get_permalink() ) . 'schedule/',
         ),
         'sponsors' => array(
             'title' => __( 'Sponsors', 'meetup' ),
-            'link' => trailingslashit( get_permalink() ) . 'sponsors',
+            'link' => trailingslashit( get_permalink() ) . 'sponsors/',
         ),
         'attendies' => array(
             'title' => __( 'Attendies', 'meetup' ),
-            'link' => trailingslashit( get_permalink() ) . 'attendies',
+            'link' => trailingslashit( get_permalink() ) . 'attendies/',
         ),
         'gallery' => array(
             'title' => __( 'Gallery', 'meetup' ),
-            'link' => trailingslashit( get_permalink() ) . 'gallery',
+            'link' => trailingslashit( get_permalink() ) . 'gallery/',
         ),
     );
 
@@ -209,6 +222,10 @@ function meetup_navigation() {
     } elseif ( meetup_is_sponsor_page() ) {
 
         $current_menu = 'sponsors';
+
+    } elseif ( meetup_is_schedule_page() ) {
+
+        $current_menu = 'schedule';
 
     } elseif ( meetup_is_attendies_page() ) {
 

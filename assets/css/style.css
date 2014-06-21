@@ -55,6 +55,7 @@
 .meetup-entry-header .meetup-cover-wrap .meetup-event-header .meetup-date-wrap .meetup-month {
   font-size: 10px;
   padding-bottom: 5px;
+  text-transform: uppercase;
 }
 .meetup-entry-header .meetup-cover-wrap .meetup-event-header .meetup-title {
   float: left;
@@ -218,6 +219,11 @@
   margin-bottom: 20px;
   font-size: 26px;
 }
+.meetup-content-wrap .meetup-join-event h3 small {
+  font-weight: normal;
+  display: block;
+  padding-top: 8px;
+}
 .meetup-content-wrap .meetup-join-event .meetup-reg-ends {
   border-top: 1px solid #eee;
   padding-top: 15px;
@@ -285,10 +291,79 @@ ul.meetup-listing .meetup-caption h2.topic-name {
   font-size: 18px;
   margin: 0 0 10px 0;
 }
+ul.meetup-listing .meetup-caption h3.speaker-name {
+  margin-bottom: 10px;
+}
 ul.meetup-listing .meetup-caption h3.speaker-name small {
   font-style: italic;
   font-weight: normal;
 }
 ul.meetup-listing .meetup-caption .speaker-bio {
   margin-top: 25px;
+}
+table.meetup-table {
+  width: 100%;
+  margin: 15px 0 20px 0;
+}
+.meetup-sponsor-text {
+  margin-bottom: 20px;
+}
+ul.meetup-image-gallery {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  -webkit-transition: all 1s ease;
+  -moz-transition: all 1s ease;
+  -o-transition: all 1s ease;
+  transition: all 1s ease;
+}
+ul.meetup-image-gallery > li {
+  display: inline-block;
+  padding: 0;
+  margin: 0 10px 0 0;
+}
+ul.meetup-image-gallery > li img {
+  width: 150px;
+  height: 150px;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  border-radius: 2px;
+  box-shadow: 0 1px 4px 0 #A5A5A5;
+  margin: 0;
+  padding: 0;
+}
+ul.meetup-image-gallery > li img:hover {
+  box-shadow: 0 1px 12px 0 #A5A5A5;
+}
+table.meetup-table {
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+}
+table.meetup-table > thead > tr > th,
+table.meetup-table > tbody > tr > th,
+table.meetup-table > tfoot > tr > th,
+table.meetup-table > thead > tr > td,
+table.meetup-table > tbody > tr > td,
+table.meetup-table > tfoot > tr > td {
+  padding: 8px;
+  line-height: 1.428571429;
+  vertical-align: top;
+  border-top: 1px solid #ddd;
+}
+table.meetup-table > thead > tr > th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #ddd;
+}
+table.meetup-table > caption + thead > tr:first-child > th,
+table.meetup-table > colgroup + thead > tr:first-child > th,
+table.meetup-table > thead:first-child > tr:first-child > th,
+table.meetup-table > caption + thead > tr:first-child > td,
+table.meetup-table > colgroup + thead > tr:first-child > td,
+table.meetup-table > thead:first-child > tr:first-child > td {
+  border-top: 0;
+}
+table.meetup-table > tbody + tbody {
+  border-top: 2px solid #ddd;
 }

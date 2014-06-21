@@ -34,6 +34,10 @@
                                 <?php } ?>
                             </h3>
 
+                            <?php if ( isset( $speaker['slide_url'] ) && !empty( $speaker['slide_url'] ) ) { ?>
+                                <strong><?php _e( 'Slide:', 'meetup' ); ?></strong> <a target="_blank" href="<?php echo $speaker['slide_url']; ?>"><?php echo $speaker['slide_url']; ?></a>
+                            <?php } ?>
+
                             <div class="speaker-bio">
                                 <?php echo wp_kses_post( $speaker['bio'] ); ?>
                             </div>

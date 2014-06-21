@@ -21,6 +21,7 @@ class WeDevs_Meetup_Rewrites {
     function rewrite_rule() {
         add_rewrite_rule( 'meetup/([^/]+)/speakers', 'index.php?meetup=$matches[1]&speakers=yes', 'top' );
         add_rewrite_rule( 'meetup/([^/]+)/sponsors', 'index.php?meetup=$matches[1]&sponsors=yes', 'top' );
+        add_rewrite_rule( 'meetup/([^/]+)/schedule', 'index.php?meetup=$matches[1]&schedule=yes', 'top' );
         add_rewrite_rule( 'meetup/([^/]+)/attendies', 'index.php?meetup=$matches[1]&attendies=yes', 'top' );
         add_rewrite_rule( 'meetup/([^/]+)/gallery', 'index.php?meetup=$matches[1]&gallery=yes', 'top' );
     }
@@ -34,6 +35,7 @@ class WeDevs_Meetup_Rewrites {
     function register_query_var( $vars ) {
         $vars[] = 'speakers';
         $vars[] = 'sponsors';
+        $vars[] = 'schedule';
         $vars[] = 'attendies';
         $vars[] = 'gallery';
 

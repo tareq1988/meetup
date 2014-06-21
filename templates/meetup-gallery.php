@@ -5,7 +5,28 @@
     <div class="meetup-content-wrap">
 
         <div class="meetup-gallery-listing">
-            Gallery
+            <?php
+            $gallery = get_post_meta( get_the_id(), 'gallery' );
+
+            if ( $gallery ) {
+                ?>
+                <ul class="meetup-image-gallery">
+
+                <?php foreach ($gallery as $attachment_id) { ?>
+                    <li>
+                        <a href="<?php echo wp_get_attachment_url( $attachment_id ); ?>" rel="meetup-image">
+                            <?php echo wp_get_attachment_image( $attachment_id, 'thumbnail' ) ?>
+                        </a>
+                    </li>
+                <?php } ?>
+
+                </ul>
+
+                <?php
+            } else {
+                _e( 'No image has been found!', 'meetup' );
+            }
+            ?>
         </div>
 
     </div>

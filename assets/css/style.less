@@ -69,6 +69,7 @@
                 .meetup-month {
                     font-size: 10px;
                     padding-bottom: 5px;
+                    text-transform: uppercase;
                 }
             }
 
@@ -264,6 +265,12 @@
             text-align: center;
             margin-bottom: 20px;
             font-size: 26px;
+
+            small {
+                font-weight: normal;
+                display: block;
+                padding-top: 8px;
+            }
         }
 
         .meetup-reg-ends {
@@ -344,6 +351,8 @@ ul.meetup-listing {
         }
 
         h3.speaker-name {
+            margin-bottom: 10px;
+
             small {
                 font-style: italic;
                 font-weight: normal;
@@ -353,5 +362,85 @@ ul.meetup-listing {
         .speaker-bio {
             margin-top: 25px;
         }
+    }
+}
+
+table.meetup-table {
+    width: 100%;
+    margin: 15px 0 20px 0;
+}
+
+.meetup-sponsor-text {
+    margin-bottom: 20px;
+}
+
+ul.meetup-image-gallery {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+
+    > li {
+        display: inline-block;
+        padding: 0;
+        margin: 0 10px 0 0;
+
+        img {
+            width: 150px;
+            height: 150px;
+            border: 1px solid #ddd;
+            .border-radius(2px);
+            box-shadow: 0 1px 4px 0 #A5A5A5;
+            margin: 0;
+            padding: 0;
+
+            &:hover {
+                box-shadow: 0 1px 12px 0 #A5A5A5;
+            }
+        }
+    }
+}
+
+table.meetup-table {
+    width: 100%;
+    max-width: 100%;
+    margin-bottom: 20px;
+
+    // Cells
+    > thead,
+    > tbody,
+    > tfoot {
+        > tr {
+            > th,
+            > td {
+                padding: 8px;
+                line-height: 1.428571429;
+                vertical-align: top;
+                border-top: 1px solid #ddd;
+            }
+        }
+    }
+    // Bottom align for column headings
+    > thead > tr > th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #ddd;
+    }
+    // Remove top border from thead by default
+    > caption + thead,
+    > colgroup + thead,
+    > thead:first-child {
+        > tr:first-child {
+            > th,
+            > td {
+                border-top: 0;
+            }
+        }
+    }
+    // Account for multiple tbody instances
+    > tbody + tbody {
+        border-top: 2px solid #ddd;
     }
 }

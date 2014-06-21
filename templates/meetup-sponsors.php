@@ -4,10 +4,18 @@
 
     <div class="meetup-content-wrap">
 
-        <div class="meetup-speaker-listing">
+        <div class="meetup-sponsor-listing">
             <?php
             $sponsors = get_post_meta( get_the_id(), 'sponsors' );
-            // var_dump($sponsors);
+            $details = get_post_meta( get_the_id(), 'sponsor_details', true );
+
+            if ( !empty( $details ) ) {
+                ?>
+                <div class="meetup-sponsor-text">
+                    <p><?php echo wp_kses_post( $details ); ?></p>
+                </div>
+                <?php
+            }
 
             if ( $sponsors ) {
                 ?>
@@ -17,9 +25,11 @@
                 <?php foreach ($sponsors as $sponsor) { ?>
 
                     <li>
-                        <div class="meetup-thumb">
-                            <?php echo get_avatar( '', 112, false, $sponsor['name'] ); ?>
-                        </div>
+                        <?php if ( $sponsor['logo'] ) { ?>
+                            <div class="meetup-thumb">
+                                <?php echo wp_get_attachment_image( $sponsor['logo'], 'thumbnail' ) ?>
+                            </div>
+                        <?php } ?>
 
                         <div class="meetup-caption">
 

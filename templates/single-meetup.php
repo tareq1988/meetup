@@ -15,25 +15,27 @@ get_header(); ?>
 			<?php while ( have_posts() ) : the_post(); ?>
 
 				<?php
-				if ( meetup_is_speaker_page() ) {
+				$part = 'content';
 
-					meetup_get_template_part( 'meetup', 'speakers' );
+				if ( meetup_is_speaker_page() ) {
+					$part = 'speakers';
 
 				} elseif ( meetup_is_sponsor_page() ) {
+					$part = 'sponsors';
 
-					meetup_get_template_part( 'meetup', 'sponsors' );
+				} elseif ( meetup_is_schedule_page() ) {
+					$part = 'schedule';
 
 				} elseif ( meetup_is_attendies_page() ) {
-
-					meetup_get_template_part( 'meetup', 'attendies' );
+					$part = 'attendies';
 
 				} elseif ( meetup_is_gallery_page() ) {
-
-					meetup_get_template_part( 'meetup', 'gallery' );
-
-				} else {
-					meetup_get_template_part( 'meetup', 'content' );
+					$part = 'gallery';
 				}
+
+				$part = apply_filters( 'meetup_single_template_part', $part );
+
+				meetup_get_template_part( 'meetup', $part );
 				?>
 
 			<?php endwhile; // end of the loop. ?>
