@@ -55,32 +55,32 @@ if ( date( 'dmY', $from ) !== date( 'dmY', $to ) ) {
                                     </button>
 
                                     <div class="meetup-reg-link">
-                                        <a href="#">or, register with email</a>
+                                        <a href="#"><?php _e( 'or, register with email', 'meetup' ); ?></a>
                                     </div>
                                 </section><!-- .meetup-fb-register -->
 
                                 <section class="meetup-site-join meetup-join-form">
 
                                     <div class="meetup-reg-link">
-                                        <a href="#">Register with Facebook</a>
+                                        <a href="#"><?php _e( 'Register with Facebook', 'meetup' ); ?></a>
                                     </div>
 
                                     <form action="" method="post" id="meetup-site-join-form">
                                         <div class="meetup-form-row meetup-col-wrap">
                                             <div class="meetup-form-half">
-                                                <label for="meetup_fname">First Name</label>
+                                                <label for="meetup_fname"><?php _e( 'First Name', 'meetup' ); ?></label>
                                                 <input type="text" name="meetup_fname" id="meetup_fname" value="" placeholder="<?php esc_attr_e( 'First Name', 'meetup' ); ?>" required>
                                             </div>
 
                                             <div class="meetup-form-half">
-                                                <label for="meetup_lname">Last Name</label>
+                                                <label for="meetup_lname"><?php _e( 'Last Name', 'meetup' ); ?></label>
                                                 <input type="text" name="meetup_lname" id="meetup_lname" value="" placeholder="<?php esc_attr_e( 'Last Name', 'meetup' ); ?>" required>
                                             </div>
 
                                         </div>
 
                                         <div class="meetup-form-row meetup-email-wrap">
-                                            <label for="meetup_email">Email Address</label>
+                                            <label for="meetup_email"><?php _e( 'Email Address', 'meetup' ); ?></label>
                                             <input type="email" name="meetup_email" id="meetup_email" value="" placeholder="you@example.com" required>
                                         </div>
 
@@ -198,7 +198,7 @@ if ( date( 'dmY', $from ) !== date( 'dmY', $to ) ) {
                         <?php $to_format = $same_day ? 'g:ia' : 'F j, Y g:ia'; ?>
                         <time><?php echo date_i18n( 'F j, Y g:ia', $from ); ?> - <?php echo date_i18n( $to_format, $to ); ?></time><br>
 
-                        <a href="#">Add to my calendar</a>
+                        <a href="#"><?php _e( 'Add to my calendar', 'meetup' ); ?></a>
                     </div>
                 </li>
 
