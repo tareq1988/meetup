@@ -15,6 +15,7 @@ class WeDevs_Meetup_Ajax {
      */
     function __construct() {
         add_action( 'wp_ajax_nopriv_meetup_site_new_join', array($this, 'guest_site_registration') );
+        add_action( 'wp_ajax_nopriv_meetup_fb_register', array($this, 'facebook_register') );
 
         add_action( 'wp_ajax_meetup_user_join', array($this, 'user_booking') );
         add_action( 'wp_ajax_meetup_booking_cancel', array($this, 'cancel_booking') );
@@ -43,6 +44,51 @@ class WeDevs_Meetup_Ajax {
     }
 
     /**
+     * Register a user
+     *
+     * @param  string $email
+     * @param  string $first_name
+     * @param  string $last_name
+     * @return boolean
+     */
+    function register_user( $email, $first_name, $last_name ) {
+        $username  = $this->guess_username( $email );
+        $user_pass = wp_generate_password( 12, false );
+
+        $errors = new WP_Error();
+        do_action( 'register_post', $username, $email, $errors );
+
+        $user_id = wp_create_user( $username, $user_pass, $email );
+
+        if ( $user_id && !is_wp_error( $user_id ) ) {
+            // we can turn on/off notification email via this filter
+            // default is `true`
+            $send_notification = apply_filters( 'meetup_new_user_notificaion', true, $user_id, $username, $email, $user_pass );
+
+            if ( $send_notification ) {
+                wp_new_user_notification( $user_id, $user_pass );
+            }
+
+            // update display name to full name
+            wp_update_user( array(
+                'ID'           => $user_id,
+                'display_name' => $first_name,
+                'first_name'   => $first_name,
+                'last_name'    => $last_name
+            ) );
+
+            do_action( 'meetup_user_registered', $user_id, $username, $email, $user_pass );
+
+            // lets auto login the user
+            wp_set_auth_cookie( $user_id, true );
+
+            return $user_id;
+        }
+
+        return false;
+    }
+
+    /**
      * Check booking limit permission
      *
      * @param  int $meetup_id
@@ -57,6 +103,32 @@ class WeDevs_Meetup_Ajax {
                 'message' => __( 'Please enter a valid seat number', 'meetup' )
             ) );
         }
+    }
+
+    /**
+     * Do the booking process
+     *
+     * @param  int $user_id
+     * @param  int $meetup_id
+     * @param  int $seat
+     * @return void
+     */
+    function do_booking( $user_id, $meetup_id, $seat ) {
+        // do the booking process
+        $booking = meetup_book_seat( $user_id, $meetup_id, $seat );
+
+        if ( is_wp_error( $booking ) ) {
+            wp_send_json_error( array(
+                'type'    => 'registered',
+                'message' => $booking->get_error_message()
+            ) );
+        }
+
+        // seems like we made a booking
+        wp_send_json_success( array(
+            'type'    => 'registered',
+            'message' => __( 'You have successfully booked the seat!', 'meetup' )
+        ) );
     }
 
     /**
@@ -92,53 +164,10 @@ class WeDevs_Meetup_Ajax {
         // may be trying to book more than permitted?
         $this->check_booking_limit( $meetup_id, $seat );
 
-        $username = $this->guess_username( $email );
-        $user_pass = wp_generate_password( 12, false );
+        // register the user
+        if ( $user_id = $this->register_user( $email, $first_name, $last_name ) ) {
 
-        $errors = new WP_Error();
-        do_action( 'register_post', $username, $email, $errors );
-
-        $user_id = wp_create_user( $username, $user_pass, $email );
-
-        // if its a success and no errors found
-        if ( $user_id && !is_wp_error( $user_id ) ) {
-
-            // we can turn on/off notification email via this filter
-            // default is `true`
-            $send_notification = apply_filters( 'meetup_new_user_notificaion', true, $user_id, $username, $email, $user_pass );
-
-            if ( $send_notification ) {
-                wp_new_user_notification( $user_id, $user_pass );
-            }
-
-            // update display name to full name
-            wp_update_user( array(
-                'ID'           => $user_id,
-                'display_name' => $first_name,
-                'first_name'   => $first_name,
-                'last_name'    => $last_name
-            ) );
-
-            do_action( 'meetup_user_registered', $user_id, $username, $email, $user_pass );
-
-            // lets auto login the user
-            wp_set_auth_cookie( $user_id, true );
-
-            // do the booking process
-            $booking = meetup_book_seat( $user_id, $meetup_id, $seat );
-
-            if ( is_wp_error( $booking ) ) {
-                wp_send_json_error( array(
-                    'type'    => 'registered',
-                    'message' => $booking->get_error_message()
-                ) );
-            }
-
-            // seems like we made a booking
-            wp_send_json_success( array(
-                'type'    => 'registered',
-                'message' => __( 'You have successfully booked the seat!', 'meetup' )
-            ) );
+            $this->do_booking( $user_id, $meetup_id, $seat );
 
         } else {
             wp_send_json_error( array(
@@ -166,13 +195,7 @@ class WeDevs_Meetup_Ajax {
         // may be trying to book more than permitted?
         $this->check_booking_limit( $meetup_id, $seat );
 
-        $booking = meetup_book_seat( $user_id, $meetup_id, $seat );
-
-        if ( is_wp_error( $booking ) ) {
-            wp_send_json_error( $booking->get_error_message() );
-        }
-
-        wp_send_json_success( __( 'You have successfully booked the seat!', 'meetup' ) );
+        $this->do_booking( $user_id, $meetup_id, $seat );
     }
 
     /**
@@ -189,6 +212,49 @@ class WeDevs_Meetup_Ajax {
 
         meetup_cancel_seat( $user_id, $meetup_id, $booking_id );
         wp_send_json_success( __( 'Your booking has been cancelled!', 'meetup' ) );
+        exit;
+    }
+
+    /**
+     * When users register via facebook button
+     *
+     * @return void
+     */
+    function facebook_register() {
+        $posted = $_POST;
+
+        $email      = $posted['email'];
+        $first_name = $posted['first_name'];
+        $last_name  = $posted['last_name'];
+        $meetup_id  = (int) $posted['meetup_id'];
+        $seat       = (int) $posted['seat'];
+
+        $user = get_user_by( 'email', $email );
+
+        if ( $user ) {
+            // an existing user found
+            // lets auto login the user
+            wp_set_auth_cookie( $user->ID, true );
+
+            // do the booking process
+            $this->do_booking( $user->ID, $meetup_id, $seat );
+
+        } else {
+
+            //register the user
+            // register the user
+            if ( $user_id = $this->register_user( $email, $first_name, $last_name ) ) {
+
+                $this->do_booking( $user_id, $meetup_id, $seat );
+
+            } else {
+                wp_send_json_error( array(
+                    'type'    => 'error',
+                    'message' => $user_id->get_error_message()
+                ) );
+            }
+        }
+
         exit;
     }
 }

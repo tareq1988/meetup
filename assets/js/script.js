@@ -19,6 +19,10 @@
         var form = $(this),
             data = form.serialize();
 
+        if ( $('#meetup_fname').val() === '' || $('#meetup_lname').val() === '' ) {
+            return false;
+        }
+
         form.find('input[type="submit"]').attr('disabled', 'disabled');
 
         $.post(meetup.ajaxurl, data, function(resp) {
@@ -53,10 +57,10 @@
 
             if ( resp.success === true ) {
                 form.remove();
-                alert( resp.data );
+                alert( resp.data.message );
                 window.location.reload();
             } else {
-                alert( resp.data );
+                alert( resp.data.message );
             }
         });
     });
