@@ -18,7 +18,13 @@
                 </div>
 
                 <div class="meetup-title">
-                    <h1 class="meetup-entry-title"><?php the_title(); ?></h1>
+                    <h1 class="meetup-entry-title">
+                    <?php if ( is_singular( 'meetup' ) ) { ?>
+                        <?php the_title(); ?>
+                    <?php } else { ?>
+                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                    <?php } ?>
+                    </h1>
                 </div>
             </div><!-- .meetup-date-title-wrap -->
         </div><!-- .meetup-event-header -->

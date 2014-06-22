@@ -69,6 +69,10 @@
   font-size: 20px;
   line-height: 24px;
 }
+.meetup-entry-header .meetup-cover-wrap .meetup-event-header .meetup-title h1 a {
+  text-decoration: none;
+  color: #fff;
+}
 .meetup-entry-header .meetup-nav-wrap {
   background: #fff;
   border: 1px solid #ccc;
