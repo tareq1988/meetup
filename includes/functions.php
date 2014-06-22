@@ -248,3 +248,22 @@ function meetup_navigation() {
 
     return $menu;
 }
+
+/**
+ * Displays navigation to next/previous pages when applicable.
+ *
+ * @return void
+ */
+function meetup_content_nav( $html_id ) {
+    global $wp_query;
+
+    $html_id = esc_attr( $html_id );
+
+    if ( $wp_query->max_num_pages > 1 ) : ?>
+        <nav id="<?php echo $html_id; ?>" class="navigation" role="navigation">
+            <h3 class="assistive-text"><?php _e( 'Post navigation', 'meetup' ); ?></h3>
+            <div class="nav-previous"><?php next_posts_link( __( '<span class="meta-nav">&larr;</span> Older Meetups', 'meetup' ) ); ?></div>
+            <div class="nav-next"><?php previous_posts_link( __( 'Newer Meetups <span class="meta-nav">&rarr;</span>', 'meetup' ) ); ?></div>
+        </nav><!-- #<?php echo $html_id; ?> .navigation -->
+    <?php endif;
+}
