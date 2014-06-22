@@ -72,7 +72,7 @@ class WeDevs_Meetup_Ajax {
             // update display name to full name
             wp_update_user( array(
                 'ID'           => $user_id,
-                'display_name' => $first_name,
+                'display_name' => $first_name . ' ' . $last_name,
                 'first_name'   => $first_name,
                 'last_name'    => $last_name
             ) );
