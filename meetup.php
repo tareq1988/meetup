@@ -134,6 +134,11 @@ class WeDevs_Meetup {
      */
     public function enqueue_scripts() {
 
+        // don't load the scripts in other pages
+        if ( ! is_singular( 'meetup' ) && ! is_post_type_archive( 'meetup' ) ) {
+            return;
+        }
+
         $asset_url = plugins_url( 'assets/', __FILE__ );
 
         /**
