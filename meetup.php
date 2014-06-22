@@ -45,6 +45,8 @@ if ( !defined( 'ABSPATH' ) ) exit;
  */
 class WeDevs_Meetup {
 
+    protected static $instance = false;
+
     /**
      * Constructor for the WeDevs_Meetup class
      *
@@ -58,6 +60,7 @@ class WeDevs_Meetup {
      */
     public function __construct() {
 
+        $this->define_constants();
         $this->file_includes();
 
         register_activation_hook( __FILE__, array( $this, 'activate' ) );
@@ -79,13 +82,12 @@ class WeDevs_Meetup {
      * and if it doesn't find one, creates it.
      */
     public static function init() {
-        static $instance = false;
 
-        if ( ! $instance ) {
-            $instance = new WeDevs_Meetup();
+        if ( ! self::$instance ) {
+            self::$instance = new self();
         }
 
-        return $instance;
+        return self::$instance;
     }
 
     /**
@@ -172,8 +174,9 @@ class WeDevs_Meetup {
                 require_once dirname( __FILE__ ) . '/lib/Custom-Meta-Boxes/custom-meta-boxes.php';
             }
 
-            require_once dirname( __FILE__ ) . '/includes/metadata.php';
-            require_once dirname( __FILE__ ) . '/includes/settings.php';
+            require_once dirname( __FILE__ ) . '/includes/admin/metadata.php';
+            require_once dirname( __FILE__ ) . '/includes/admin/settings.php';
+            require_once dirname( __FILE__ ) . '/includes/admin/functions.php';
         }
 
         require_once dirname( __FILE__ ) . '/includes/functions.php';
@@ -183,6 +186,16 @@ class WeDevs_Meetup {
         if ( defined( 'DOING_AJAX' ) && DOING_AJAX ) {
             require_once dirname( __FILE__ ) . '/includes/ajax.php';
         }
+    }
+
+    /**
+     * Define some constants
+     *
+     * @return void
+     */
+    function define_constants() {
+        define( 'MEETUP_PATH', $this->plugin_path() );
+        define( 'MEETUP_URL', $this->plugin_url() );
     }
 
     /**

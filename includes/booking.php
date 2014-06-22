@@ -199,7 +199,7 @@ add_action( 'meetup_booking_delete', 'meetup_flash_cache' );
 function meetup_get_attendies( $meetup_id ) {
     global $wpdb;
 
-    $sql   = "SELECT mu.user_id, mu.seat, u.display_name, u.user_email FROM {$wpdb->prefix}meetup_users mu
+    $sql   = "SELECT mu.id, mu.user_id, mu.seat, u.display_name, u.user_email, mu.created FROM {$wpdb->prefix}meetup_users mu
             LEFT JOIN $wpdb->users u ON u.ID = mu.user_id
             WHERE meetup_id = %d AND status = 1
             ORDER BY mu.created ASC";

@@ -9,8 +9,8 @@ class WeDevs_Meetup_Admin {
 
     function __construct() {
 
-        if ( !class_exists( 'WeDevs_Settings_API' ) ) {
-            require_once dirname( dirname( __FILE__ ) ) . '/lib/class.settings-api.php';
+        if ( ! class_exists( 'WeDevs_Settings_API' ) ) {
+            require_once MEETUP_PATH . '/lib/class.settings-api.php';
         }
 
         $this->settings_api = new WeDevs_Settings_API();
@@ -53,6 +53,9 @@ class WeDevs_Meetup_Admin {
      */
     function admin_menu() {
         add_submenu_page( 'edit.php?post_type=meetup', __( 'Settings', 'meetup' ), __( 'Settings', 'meetup' ), 'manage_options', 'meetup-settings', array($this, 'plugin_page') );
+        add_submenu_page( 'edit.php?post_type=meetup', __( 'Attendies', 'meetup' ), __( 'Attendies', 'meetup' ), 'manage_options', 'meetup-attendies', array($this, 'attendies_page') );
+
+        remove_submenu_page( 'edit.php?post_type=meetup', 'meetup-attendies' );
     }
 
     function plugin_page() {
@@ -66,6 +69,22 @@ class WeDevs_Meetup_Admin {
             ?>
         </div>
         <?php
+    }
+
+    function attendies_page() {
+        $meetup_id = isset( $_GET['meetup_id'] ) ? intval( $_GET['meetup_id'] ) : 0;
+
+        if ( ! $meetup_id ) {
+            wp_die( __( 'No meetup has been found!', 'meetup' ) );
+        }
+
+        $meetup = get_post( $meetup_id );
+
+        if ( ! $meetup || $meetup->post_type != 'meetup' ) {
+            return;
+        }
+
+        include dirname( __FILE__ ) . '/attendee-list.php';
     }
 }
 
