@@ -1,10 +1,11 @@
 <?php
 /**
- * The Template for displaying all single posts
+ * You can override this template
  *
- * @package WordPress
- * @subpackage Twenty_Twelve
- * @since Twenty Twelve 1.0
+ * If you would like to edit this file, copy it to your current theme's directory in "meetup" folder and edit it there.
+ * Meetup will always look in your theme's directory first, before using this default template.
+ *
+ * @package Meetup
  */
 
 get_header(); ?>
