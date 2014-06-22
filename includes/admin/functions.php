@@ -13,6 +13,8 @@ function meetup_admin_row_action( $actions, $post ) {
         return $actions;
     }
 
+    unset( $actions['inline hide-if-no-js'] );
+
     $actions['attendee'] = '<a href="' . admin_url( 'edit.php?post_type=meetup&page=meetup-attendies&meetup_id=' . $post->ID ) . '">' . __( 'Attendee List', 'meetup' ) . '</a>';
 
     return $actions;
@@ -88,3 +90,63 @@ function meetup_admin_cancel_booking() {
 }
 
 add_action( 'admin_post_meetup_cancel_booking', 'meetup_admin_cancel_booking' );
+
+
+/**
+ * Columns form builder list table
+ *
+ * @param type $columns
+ * @return string
+ */
+function meetup_post_type_admin_column( $columns ) {
+    $columns = array(
+        'cb'          => '<input type="checkbox" />',
+        'title'       => __( 'Meetup Name', 'meetup' ),
+        'meetup_date' => __( 'Date', 'meetup' ),
+        'booked'      => __( 'Booked', 'meetup' ),
+        'available'   => __( 'Available', 'meetup' ),
+        'capacity'    => __( 'Capacity', 'meetup' ),
+    );
+
+    return $columns;
+}
+
+add_filter( 'manage_edit-meetup_columns', 'meetup_post_type_admin_column' );
+
+
+/**
+ * Custom Column value for post form builder
+ *
+ * @param string $column_name
+ * @param int $post_id
+ */
+function meetup_post_type_admin_column_value( $column_name, $post_id ) {
+    switch ($column_name) {
+        case 'meetup_date':
+            $from = get_post_meta( $post_id, 'from', true );
+
+            if ( ! empty( $from ) ) {
+                echo date_i18n( 'F j, Y g:ia', $from );
+            }
+
+            break;
+
+        case 'capacity':
+            echo meetup_get_capacity( $post_id );
+            break;
+
+        case 'booked':
+            echo meetup_num_booked_seat( $post_id );
+            break;
+
+        case 'available':
+            echo meetup_num_available_seat( $post_id );
+            break;
+
+        default:
+            # code...
+            break;
+    }
+}
+
+add_action( 'manage_meetup_posts_custom_column', 'meetup_post_type_admin_column_value', 10, 2 );

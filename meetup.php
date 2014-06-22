@@ -147,7 +147,7 @@ class WeDevs_Meetup {
          * All styles goes here
          */
         wp_enqueue_style( 'fontawesome', $asset_url . 'css/font-awesome.min.css', false, date( 'Ymd' ) );
-        wp_enqueue_style( 'meetup-styles', $asset_url . 'css/style.css', false, date( 'Ymd' ) );
+        wp_enqueue_style( 'meetup-styles', $asset_url . 'css/style.css', false, '1' );
 
         /**
          * All scripts goes here
