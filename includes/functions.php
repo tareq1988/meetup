@@ -267,3 +267,74 @@ function meetup_content_nav( $html_id ) {
         </nav><!-- #<?php echo $html_id; ?> .navigation -->
     <?php endif;
 }
+
+/**
+ * Escapes a string of characters
+ *
+ * @param  string $string
+ * @return string
+ */
+function meetup_clean_string( $string ) {
+    $string = strip_tags( $string );
+    $string = str_replace( array( "\n", "\r" ), ' ', $string );
+
+    return $string;
+}
+
+/**
+ * Generate iCal file for Apple Calendar
+ *
+ * @return void
+ */
+function meetup_generate_ical() {
+    if ( ! isset( $_GET['meetup_action' ] ) ) {
+        return;
+    }
+
+    if ( $_GET['meetup_action' ] != 'ical_gen' ) {
+        return;
+    }
+
+    check_admin_referer( 'meetup-ical-gen' );
+
+    global $post;
+
+    if ( $post->post_type != 'meetup' ) {
+        return;
+    }
+
+    $post_id    = $post->ID;
+    $gmt_offset = get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+    $from       = get_post_meta( $post_id, 'from', true );
+    $to         = get_post_meta( $post_id, 'to', true );
+    $address    = meetup_clean_string( get_post_meta( $post_id, 'address', true ) );
+
+    $url        = get_permalink();
+    $title      = meetup_clean_string( get_the_title() );
+    $starts     = date( "Ymd\THis\Z", ( $from + $gmt_offset ) );
+    $ends       = date( "Ymd\THis\Z", ($to + $gmt_offset) );
+    $details    = sprintf( __( 'For details, link here: %s', 'meetup' ), get_permalink() );
+    $filename   = 'meetup-' . $post_id;
+
+
+    header('Content-type: text/calendar; charset=utf-8');
+    header('Content-Disposition: attachment; filename=' . $filename);
+
+    echo <<<ICS
+BEGIN:VCALENDAR
+VERSION:2.0
+BEGIN:VEVENT
+URL:$url
+DTSTART:$starts
+DTEND:$ends
+SUMMARY:$title
+DESCRIPTION:$details
+LOCATION:$address
+END:VEVENT
+END:VCALENDAR
+ICS;
+
+    die();
+}
+
+add_action( 'template_redirect', 'meetup_generate_ical' );

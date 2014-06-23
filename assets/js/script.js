@@ -89,4 +89,10 @@
         }
     });
 
+    $('a.meetup-add-to-calendar').on('click', function(e) {
+        e.preventDefault();
+
+        $(this).siblings('.meetup-add-calendar-wrap').slideToggle('fast');
+    });
+
 })(jQuery);

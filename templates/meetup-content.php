@@ -245,12 +245,42 @@ $fb_api_key = isset( $fb_option['app_id'] ) ? $fb_option['app_id'] : '';
 
                         <?php $to_format = $same_day ? 'g:ia' : 'F j, Y g:ia'; ?>
                         <time><?php echo date_i18n( 'F j, Y g:ia', $from ); ?> - <?php echo date_i18n( $to_format, $to ); ?></time><br>
-
-                        <a href="#"><?php _e( 'Add to my calendar', 'meetup' ); ?></a>
                     </div>
                 </li>
 
-                <li class="clearfix">
+                <li>
+                    <div class="meetup-icon">
+                        <i class="fa fa-calendar"></i>
+                    </div>
+
+                    <div class="meetup-details">
+                        <a class="meetup-add-to-calendar" href="#"><?php _e( 'Add to my calendar', 'meetup' ); ?></a>
+
+                        <div class="meetup-add-calendar-wrap">
+                            <?php
+                            $gmt_offset = get_option( 'gmt_offset' ) * HOUR_IN_SECONDS;
+
+                            $google_calendar = add_query_arg( array(
+                                'text'     => urlencode( get_the_title() ),
+                                'dates'    => date( "Ymd\THis\Z", ( $from + $gmt_offset ) ) . '/' . date( "Ymd\THis\Z", ($to + $gmt_offset) ),
+                                'details'  => urlencode( sprintf( __( 'For details, link here: %s', 'meetup' ), get_permalink() ) ),
+                                'location' => urlencode( $address )
+                            ), 'https://www.google.com/calendar/render?action=TEMPLATE' );
+
+                            $ical_ics = add_query_arg( array(
+                                'meetup_action' => 'ical_gen',
+                                '_wpnonce'      => wp_create_nonce( 'meetup-ical-gen' )
+                            ), get_permalink() );
+                            ?>
+                            <ul class="meetup-calendar-provider">
+                                <li><a href="<?php echo $google_calendar; ?>" target="_blank" rel="nofollow"><?php _e( 'Google Calendar', 'meetup' ); ?></a></li>
+                                <li><a href="<?php echo $ical_ics; ?>"><?php _e( 'Apple iCal', 'meetup' ); ?></a></li>
+                                <li><a href="<?php echo $ical_ics; ?>"><?php _e( 'Microsoft Outlook', 'meetup' ); ?></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </li>
+                <li>
                     <div class="meetup-icon">
                         <i class="fa fa-map-marker"></i>
                     </div>

@@ -278,6 +278,18 @@
 .meetup-content-wrap .meetup-col-right .meetup-details {
   float: left;
 }
+.meetup-content-wrap .meetup-col-right .meetup-add-calendar-wrap {
+  display: none;
+}
+.meetup-content-wrap .meetup-col-right .meetup-add-calendar-wrap ul.meetup-calendar-provider {
+  margin: 10px 0 0 0;
+  padding: 0;
+  list-style: none;
+}
+.meetup-content-wrap .meetup-col-right .meetup-add-calendar-wrap ul.meetup-calendar-provider li {
+  padding: 5px 0;
+  margin: 0;
+}
 .meetup-content-wrap .meetup-col-right li {
   clear: both;
   overflow: hidden;
@@ -429,7 +441,7 @@ table.meetup-table > tbody + tbody {
 }
 @media (max-width: 480px) {
   .meetup-entry-header .meetup-cover-wrap {
-    height: 200px;
+    height: 160px;
   }
   .meetup-entry-header .meetup-nav-wrap .meetup-nav {
     float: none;
@@ -491,6 +503,9 @@ table.meetup-table > tbody + tbody {
     padding: 0;
     margin: 0 0 15px 0;
     text-align: center;
+  }
+  ul.meetup-attendee-list > li {
+    width: 40%;
   }
 }
 @media (max-width: 767px) {
