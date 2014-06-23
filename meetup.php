@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: Meetup
-Plugin URI: http://tareq.wedevs.com/
+Plugin URI: http://wedevs.com/plugin/meetup
 Description: Create meetup events
 Version: 0.1
 Author: Tareq Hasan
@@ -147,7 +147,7 @@ class WeDevs_Meetup {
          * All styles goes here
          */
         wp_enqueue_style( 'fontawesome', $asset_url . 'css/font-awesome.min.css', false, date( 'Ymd' ) );
-        wp_enqueue_style( 'meetup-styles', $asset_url . 'css/style.css', false, '1' );
+        wp_enqueue_style( 'meetup-styles', $asset_url . 'css/style.css', false, '2' );
 
         /**
          * All scripts goes here
