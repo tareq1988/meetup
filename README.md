@@ -1,4 +1,4 @@
-![image](http://i.imgur.com/4jQDWMN.png)
+![image](http://i.imgur.com/r9uAQ7C.png)
 
 Meetup
 ====================
