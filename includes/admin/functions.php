@@ -51,7 +51,7 @@ function meetup_export_users() {
 
         $file_name = 'meetup-' . $meetup_id . '.csv';
 
-        header("Content-type: text/csv");
+        header("Content-type: text/csv; charset=utf-8");
         header("Content-Disposition: attachment; filename=$file_name");
         header("Pragma: no-cache");
         header("Expires: 0");
