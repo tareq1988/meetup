@@ -76,5 +76,12 @@
         <?php
     }
     ?>
-
 </div>
+
+<script type="text/javascript">
+jQuery(function($) {
+    $('table').addTableFilter({
+        labelText: "<?php _e( 'Filter: ' ); ?>",
+    });
+});
+</script>

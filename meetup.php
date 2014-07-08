@@ -73,6 +73,7 @@ class WeDevs_Meetup {
 
         // Loads frontend scripts and styles
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+        add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ) );
     }
 
     /**
@@ -157,6 +158,22 @@ class WeDevs_Meetup {
             'ajaxurl' => admin_url( 'admin-ajax.php', 'relative' ),
             'nonce' => wp_create_nonce( 'meetup-nonce' )
         ) );
+    }
+
+    /**
+     * Enqueue script for the admin panel
+     *
+     * @return void
+     */
+    public function admin_enqueue_scripts( $page ) {
+
+        if ( $page != 'meetup_page_meetup-attendies' ) {
+            return;
+        }
+
+        $asset_url = plugins_url( 'assets/', __FILE__ );
+
+        wp_enqueue_script( 'meetup-filterable', $asset_url . 'js/jquery.table-filter.min.js', array( 'jquery' ), false, true );
     }
 
     /**
