@@ -176,3 +176,21 @@ function meetup_post_type_admin_column_value( $column_name, $post_id ) {
 }
 
 add_action( 'manage_meetup_posts_custom_column', 'meetup_post_type_admin_column_value', 10, 2 );
+
+/**
+ * Adds additional contact methods to user profile
+ *
+ * @param  array $methods
+ * @return array
+ */
+function meetup_user_contact_methods( $methods ) {
+
+    $methods['twitter']  = __( 'Twitter', 'meetup' );
+    $methods['career']   = __( 'Profession', 'meetup' );
+    $methods['phone']    = __( 'Phone', 'meetup' );
+    $methods['_fb_link'] = __( 'Facebook', 'meetup' );
+
+    return $methods;
+}
+
+add_filter( 'user_contactmethods', 'meetup_user_contact_methods' );
