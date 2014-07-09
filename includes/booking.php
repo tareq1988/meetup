@@ -174,6 +174,62 @@ function meetup_cancel_seat( $user_id, $meetup_id, $booking_id ) {
     do_action( 'meetup_booking_delete', $meetup_id, $user_id, $booking_id );
 }
 
+
+/**
+ * Change a seat status
+ *
+ * @param  int $booking_id
+ * @param  int $status
+ * @return void
+ */
+function meetup_seat_change_status( $booking_id, $status ) {
+    global $wpdb;
+
+    $wpdb->update( $wpdb->prefix . 'meetup_users',
+        array(
+            'status' => $status
+        ),
+        array(
+            'id'     => $booking_id
+        ),
+        array( '%d' ),
+        array( '%d' )
+    );
+
+    do_action( 'meetup_booking_status_update', $status, $booking_id );
+}
+
+/**
+ * Get meetup seat statuses
+ *
+ * @return array
+ */
+function meetup_get_seat_statuses() {
+    $statuses = array(
+        1 => __( 'Booked', 'meetup' ),
+        2 => __( 'Confirmed', 'meetup' ),
+        3 => __( 'Checked In', 'meetup' )
+    );
+
+    return apply_filters( 'meetup_seat_statuses', $statuses );
+}
+
+/**
+ * Get the status name of a seat
+ *
+ * @param  int $status
+ * @return string
+ */
+function meetup_get_seat_status( $status ) {
+    $statuses = meetup_get_seat_statuses();
+
+    if ( isset( $statuses[$status] ) ) {
+        return $statuses[$status];
+    }
+
+    return false;
+}
+
 /**
  * Flush cache for meetup
  *
@@ -199,9 +255,10 @@ add_action( 'meetup_booking_delete', 'meetup_flash_cache' );
 function meetup_get_attendies( $meetup_id ) {
     global $wpdb;
 
-    $sql   = "SELECT mu.id, mu.user_id, mu.seat, u.display_name, u.user_email, mu.created FROM {$wpdb->prefix}meetup_users mu
+    $sql   = "SELECT mu.id, mu.user_id, mu.seat, u.display_name, u.user_email, mu.created, mu.status
+            FROM {$wpdb->prefix}meetup_users mu
             LEFT JOIN $wpdb->users u ON u.ID = mu.user_id
-            WHERE meetup_id = %d AND status = 1
+            WHERE meetup_id = %d
             ORDER BY mu.created ASC";
     $users = $wpdb->get_results( $wpdb->prepare( $sql, $meetup_id ) );
 

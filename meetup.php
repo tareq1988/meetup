@@ -176,7 +176,11 @@ class WeDevs_Meetup {
 
         $asset_url = plugins_url( 'assets/', __FILE__ );
 
+        wp_enqueue_style( 'meetup-admin', $asset_url . 'css/admin.css' );
+
         wp_enqueue_script( 'meetup-filterable', $asset_url . 'js/jquery.table-filter.min.js', array( 'jquery' ), false, true );
+        wp_enqueue_script( 'meetup-tiptip', $asset_url . 'js/jquery.tipTip.min.js', array( 'jquery' ), false, true );
+        wp_enqueue_script( 'meetup-admin', $asset_url . 'js/admin.js', array( 'jquery' ), false, true );
     }
 
     /**

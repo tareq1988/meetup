@@ -91,6 +91,32 @@ function meetup_admin_cancel_booking() {
 
 add_action( 'admin_post_meetup_cancel_booking', 'meetup_admin_cancel_booking' );
 
+/**
+ * Toggle "check in" for a user
+ *
+ * @return void
+ */
+function meetup_admin_user_checkin() {
+    if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
+    check_admin_referer( 'meetup-checkin' );
+
+    $meetup_id  = isset( $_REQUEST['meetup_id'] ) ? intval( $_REQUEST['meetup_id'] ) : 0;
+    $booking_id = isset( $_REQUEST['id'] ) ? intval( $_REQUEST['id'] ) : 0;
+    $current = isset( $_REQUEST['current'] ) ? intval( $_REQUEST['current'] ) : 0;
+
+    // toggle the status
+    $status = ( $current == '3' ) ? '1' : '3'; // 3:checkin, 1:booked
+
+    meetup_seat_change_status( $booking_id, $status );
+
+    wp_redirect( admin_url( 'edit.php?post_type=meetup&page=meetup-attendies&message=checkin&meetup_id=' . $meetup_id ) );
+}
+
+add_action( 'admin_post_meetup_checkin', 'meetup_admin_user_checkin' );
+
 
 /**
  * Columns form builder list table
