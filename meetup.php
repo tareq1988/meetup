@@ -70,6 +70,7 @@ class WeDevs_Meetup {
         add_action( 'init', array( $this, 'register_post_type' ) );
 
         add_filter( 'template_include', array( $this, 'template_loader' ) );
+        add_filter( 'body_class', array( $this, 'body_class' ) );
 
         // Loads frontend scripts and styles
         add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -153,10 +154,12 @@ class WeDevs_Meetup {
         /**
          * All scripts goes here
          */
+        wp_enqueue_script( 'jquery-blockui', $asset_url . 'js/jquery.blockUI.min.js', array( 'jquery' ), false, true );
         wp_enqueue_script( 'meetup-scripts', $asset_url . 'js/script.js', array( 'jquery' ), false, true );
         wp_localize_script( 'meetup-scripts', 'meetup', array(
-            'ajaxurl' => admin_url( 'admin-ajax.php', 'relative' ),
-            'nonce' => wp_create_nonce( 'meetup-nonce' )
+            'ajaxurl'     => admin_url( 'admin-ajax.php', 'relative' ),
+            'ajax_loader' => $asset_url . '/images/ajax-loader.gif',
+            'nonce'       => wp_create_nonce( 'meetup-nonce' )
         ) );
     }
 
@@ -328,6 +331,24 @@ class WeDevs_Meetup {
         }
 
         return $template;
+    }
+
+    /**
+     * Add full-width class on body
+     *
+     * Speacially needed for twentytwelve theme
+     *
+     * @param  array $classes
+     * @return array
+     */
+    function body_class( $classes ) {
+        if ( is_singular( 'meetup' ) || is_post_type_archive( 'meetup' ) ) {
+            if ( ! in_array( 'full-width', $classes ) ) {
+                $classes[] = 'full-width';
+            }
+        }
+
+        return $classes;
     }
 
 } // WeDevs_Meetup

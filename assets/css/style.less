@@ -235,15 +235,8 @@
                 padding-bottom: 5px;
             }
 
-            input[type="text"], input[type="email"] {
+            input[type="text"], input[type="email"], input[type="tel"], input[type="url"], textarea {
                 width: 90%;
-            }
-
-            select {
-                padding: 2px;
-                border: 1px solid #ccc;
-                font-size: 18px;
-                width: 70px;
             }
         }
 
@@ -306,6 +299,30 @@
             padding-top: 15px;
             margin-top: 15px;
         }
+
+        .meetup-joined {
+            text-align: center;
+            background: #C5F3C5;
+            border: 1px solid darken(#C5F3C5, 10%);
+            padding: 15px 15px 0 15px;
+            .border-radius(3px);
+
+            p {
+                margin-bottom: 20px;
+            }
+
+            a.meetup-cancel-booking {
+                background: #d9534f;
+                color: #fff;
+                padding: 3px 10px;
+                text-decoration: none;
+                .border-radius(3px);
+
+                &:hover {
+                    background: darken(#d9534f, 10%);
+                }
+            }
+        }
     }
 
     .meetup-form-half {
@@ -354,6 +371,43 @@
             overflow: hidden;
             display: block;
             padding-bottom: 15px;
+        }
+    }
+}
+
+form#meetup-join-form {
+    text-align: left;
+}
+
+ul.meetup-join-fields {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    text-align: left;
+
+    li {
+        clear: both;
+        margin-bottom: 10px;
+        overflow: hidden;
+        display: block;
+
+        label {
+            float: left;
+            width: 23%;
+        }
+
+        .field-wrap {
+            width: 75%;
+            float: left;
+
+            select {
+                width: auto !important;
+                font-size: 13px !important;
+            }
+
+            input[type="text"],input[type="email"],input[type="url"], input[type="tel"], textarea {
+                width: 90%;
+            }
         }
     }
 }

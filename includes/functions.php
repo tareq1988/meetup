@@ -338,3 +338,144 @@ ICS;
 }
 
 add_action( 'template_redirect', 'meetup_generate_ical' );
+
+/**
+ * Check if registration has been started
+ *
+ * @param  int $meetup_id
+ * @return boolean
+ */
+function meetup_is_registration_started( $meetup_id ) {
+    $reg_starts = get_post_meta( $meetup_id, 'reg_starts', true );
+
+    return time() > $reg_starts;
+}
+
+/**
+ * Check if registration has been finished
+ *
+ * @param  int $meetup_id
+ * @return boolean
+ */
+function meetup_is_registration_finished( $meetup_id ) {
+    $reg_ends = get_post_meta( $meetup_id, 'reg_ends', true );
+
+    return time() > $reg_ends;
+}
+
+/**
+ * Signup fields for meetup
+ *
+ * @param  integer $meetup_id
+ * @return void
+ */
+function meetup_signup_fields( $meetup_id = 0 ) {
+    $userdata   = wp_get_current_user();
+    $book_limit = get_post_meta( $meetup_id, 'book_limit', true );
+
+    if ( $userdata ) {
+
+        $first_name = $userdata->first_name;
+        $last_name  = $userdata->last_name;
+        $email      = $userdata->user_email;
+        $phone      = $userdata->phone;
+        $website    = $userdata->user_url;
+        $twitter    = $userdata->twitter;
+        $career     = $userdata->career;
+
+    } else {
+        $first_name = isset( $_POST['meetup_fname'] ) ? $_POST['meetup_fname'] : '';
+        $last_name  = isset( $_POST['meetup_lname'] ) ? $_POST['meetup_lname'] : '';
+        $email      = isset( $_POST['meetup_email'] ) ? $_POST['meetup_email'] : '';
+        $phone      = isset( $_POST['meetup_phone'] ) ? $_POST['meetup_phone'] : '';
+        $website    = isset( $_POST['meetup_siteurl'] ) ? $_POST['meetup_siteurl'] : '';
+        $twitter    = isset( $_POST['meetup_twitter'] ) ? $_POST['meetup_twitter'] : '';
+        $career     = isset( $_POST['meetup_career'] ) ? $_POST['meetup_career'] : '';
+    }
+
+    $careers = array(
+        'Programmer'      => __( 'Programmer', 'meetup' ),
+        'Designer'        => __( 'Designer', 'meetup' ),
+        'Journalist'      => __( 'Journalist', 'meetup' ),
+        'Blogger'         => __( 'Blogger', 'meetup' ),
+        'Project Manager' => __( 'Project Manager', 'meetup' ),
+        'Businessman'     => __( 'Businessman', 'meetup' ),
+        'Student'         => __( 'Student', 'meetup' ),
+        'Other'           => __( 'Other', 'meetup' ),
+    );
+    ?>
+    <form action="" method="post" id="meetup-join-form">
+
+        <div class="meetup-form-row meetup-col-wrap">
+            <div class="meetup-form-half">
+                <label for="meetup_fname"><?php _e( 'First Name', 'meetup' ); ?> <span class="required">*</span></label>
+                <input type="text" name="meetup_fname" id="meetup_fname" value="<?php echo esc_attr( $first_name ); ?>" placeholder="<?php esc_attr_e( 'First Name', 'meetup' ); ?>" required="required">
+            </div>
+
+            <div class="meetup-form-half">
+                <label for="meetup_lname"><?php _e( 'Last Name', 'meetup' ); ?> <span class="required">*</span></label>
+                <input type="text" name="meetup_lname" id="meetup_lname" value="<?php echo esc_attr( $last_name ); ?>" placeholder="<?php esc_attr_e( 'Last Name', 'meetup' ); ?>" required="required">
+            </div>
+        </div>
+
+        <?php if ( ! is_user_logged_in() ) { ?>
+            <div class="meetup-form-row">
+                <label for="meetup_email"><?php _e( 'Email', 'meetup' ); ?> <span class="required">*</span></label>
+                <input type="email" id="meetup_email" name="meetup_email" value="<?php echo esc_attr( $email ); ?>" required="required">
+            </div>
+        <?php } ?>
+
+        <div class="meetup-form-row">
+            <label for="meetup_phone"><?php _e( 'Phone', 'meetup' ); ?> <span class="required">*</span></label>
+            <input type="tel" id="meetup_phone" name="meetup_phone" value="<?php echo esc_attr( $phone ); ?>" required="required">
+        </div>
+
+        <div class="meetup-form-row meetup-col-wrap">
+            <div class="meetup-form-half">
+                <label for="meetup_site_url"><?php _e( 'Website', 'meetup' ); ?></label>
+                <input type="url" id="meetup_site_url" name="meetup_site_url" value="<?php echo esc_url( $website ); ?>" placeholder="http://yoursite.com">
+            </div>
+
+            <div class="meetup-form-half">
+                <label for="meetup_twitter"><?php _e( 'Twitter', 'meetup' ); ?></label>
+                <input type="text" id="meetup_twitter" name="meetup_twitter" value="<?php echo esc_attr( $twitter ); ?>" placeholder="<?php esc_attr_e( 'Give your twitter handle (username)', 'meetup' ); ?>">
+            </div>
+        </div>
+
+        <div class="meetup-form-row">
+            <label for="meetup_career"><?php _e( 'Profession', 'meetup' ); ?></label>
+
+            <select name="meetup_career" id="meetup_career">
+                <?php foreach ($careers as $key => $value) { ?>
+                    <option<?php selected( $career, $key ); ?> value="<?php echo esc_attr( $key ); ?>"><?php echo $value ?></option>
+                <?php } ?>
+            </select>
+        </div>
+
+        <?php if ( $book_limit > 1 ) { ?>
+            <div class="meetup-form-row">
+                <label for="m_seat"><?php _e( 'Number of Seat', 'meetup' ); ?></label>
+
+                <select name="meetup-fb-join-seat" id="meetup-fb-join-set">
+                    <?php for ($i = 1; $i <= $book_limit; $i++) { ?>
+                        <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
+                    <?php } ?>
+                </select>
+            </div>
+        <?php } ?>
+
+        <div class="meetup-form-row">
+            <?php wp_nonce_field( 'meetup-site-join-form' ); ?>
+            <input type="hidden" name="meetup_id" value="<?php echo $meetup_id; ?>">
+            <input type="hidden" name="action" value="meetup_user_join">
+
+            <?php if ( $book_limit == '1' ) { ?>
+                <input type="hidden" name="meetup-fb-join-seat" value="1">
+            <?php } ?>
+
+            <input type="submit" name="meetup_submit" value="<?php _e( 'Book My Seat', 'meetup' ); ?>">
+        </div>
+
+    </form>
+    <?php
+}

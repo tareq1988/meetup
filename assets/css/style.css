@@ -194,14 +194,11 @@
   padding-bottom: 5px;
 }
 .meetup-content-wrap .meetup-join-event .meetup-join-form input[type="text"],
-.meetup-content-wrap .meetup-join-event .meetup-join-form input[type="email"] {
+.meetup-content-wrap .meetup-join-event .meetup-join-form input[type="email"],
+.meetup-content-wrap .meetup-join-event .meetup-join-form input[type="tel"],
+.meetup-content-wrap .meetup-join-event .meetup-join-form input[type="url"],
+.meetup-content-wrap .meetup-join-event .meetup-join-form textarea {
   width: 90%;
-}
-.meetup-content-wrap .meetup-join-event .meetup-join-form select {
-  padding: 2px;
-  border: 1px solid #ccc;
-  font-size: 18px;
-  width: 70px;
 }
 .meetup-content-wrap .meetup-join-event .meetup-fb-register {
   text-align: center;
@@ -252,6 +249,30 @@
   padding-top: 15px;
   margin-top: 15px;
 }
+.meetup-content-wrap .meetup-join-event .meetup-joined {
+  text-align: center;
+  background: #C5F3C5;
+  border: 1px solid #9bea9b;
+  padding: 15px 15px 0 15px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.meetup-content-wrap .meetup-join-event .meetup-joined p {
+  margin-bottom: 20px;
+}
+.meetup-content-wrap .meetup-join-event .meetup-joined a.meetup-cancel-booking {
+  background: #d9534f;
+  color: #fff;
+  padding: 3px 10px;
+  text-decoration: none;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+.meetup-content-wrap .meetup-join-event .meetup-joined a.meetup-cancel-booking:hover {
+  background: #c9302c;
+}
 .meetup-content-wrap .meetup-form-half {
   float: left;
   width: 49%;
@@ -295,6 +316,40 @@
   overflow: hidden;
   display: block;
   padding-bottom: 15px;
+}
+form#meetup-join-form {
+  text-align: left;
+}
+ul.meetup-join-fields {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  text-align: left;
+}
+ul.meetup-join-fields li {
+  clear: both;
+  margin-bottom: 10px;
+  overflow: hidden;
+  display: block;
+}
+ul.meetup-join-fields li label {
+  float: left;
+  width: 23%;
+}
+ul.meetup-join-fields li .field-wrap {
+  width: 75%;
+  float: left;
+}
+ul.meetup-join-fields li .field-wrap select {
+  width: auto !important;
+  font-size: 13px !important;
+}
+ul.meetup-join-fields li .field-wrap input[type="text"],
+ul.meetup-join-fields li .field-wrap input[type="email"],
+ul.meetup-join-fields li .field-wrap input[type="url"],
+ul.meetup-join-fields li .field-wrap input[type="tel"],
+ul.meetup-join-fields li .field-wrap textarea {
+  width: 90%;
 }
 ul.meetup-listing {
   padding: 0;

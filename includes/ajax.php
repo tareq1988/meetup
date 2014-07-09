@@ -14,10 +14,11 @@ class WeDevs_Meetup_Ajax {
      * @return void
      */
     function __construct() {
-        add_action( 'wp_ajax_nopriv_meetup_site_new_join', array($this, 'guest_site_registration') );
         add_action( 'wp_ajax_nopriv_meetup_fb_register', array($this, 'facebook_register') );
 
         add_action( 'wp_ajax_meetup_user_join', array($this, 'user_booking') );
+        add_action( 'wp_ajax_nopriv_meetup_user_join', array($this, 'guest_site_registration') );
+
         add_action( 'wp_ajax_meetup_booking_cancel', array($this, 'cancel_booking') );
     }
 
@@ -114,6 +115,7 @@ class WeDevs_Meetup_Ajax {
      * @return void
      */
     function do_booking( $user_id, $meetup_id, $seat ) {
+
         // do the booking process
         $booking = meetup_book_seat( $user_id, $meetup_id, $seat );
 
@@ -139,12 +141,23 @@ class WeDevs_Meetup_Ajax {
     function guest_site_registration() {
         check_ajax_referer( 'meetup-site-join-form' );
 
-        $posted     = $_POST;
+        // do some cleanup
+        $posted     = array_map( 'strip_tags', $_POST );
+        $posted     = array_map( 'trim', $posted );
+
         $first_name = $posted['meetup_fname'];
         $last_name  = $posted['meetup_lname'];
         $email      = $posted['meetup_email'];
+        $phone      = $posted['meetup_phone'];
         $seat       = (int) $posted['meetup-fb-join-seat'];
         $meetup_id  = (int) $posted['meetup_id'];
+
+        if ( empty( $phone ) || empty( $first_name ) || empty( $last_name ) ) {
+            wp_send_json_error( array(
+                'type'    => 'error',
+                'message' => __( 'Please complete the required fields', 'meetup' )
+            ) );
+        }
 
         if ( ! is_email( $email ) ) {
             wp_send_json_error( array(
@@ -167,6 +180,7 @@ class WeDevs_Meetup_Ajax {
         // register the user
         if ( $user_id = $this->register_user( $email, $first_name, $last_name ) ) {
 
+            $this->update_user_meta( $user_id );
             $this->do_booking( $user_id, $meetup_id, $seat );
 
         } else {
@@ -187,10 +201,26 @@ class WeDevs_Meetup_Ajax {
     function user_booking() {
         check_ajax_referer( 'meetup-site-join-form' );
 
-        $posted    = $_POST;
-        $user_id   = get_current_user_id();
-        $meetup_id = (int) $posted['meetup_id'];
-        $seat      = (int) $posted['meetup-fb-join-seat'];
+        // do some cleanup
+        $posted     = array_map( 'strip_tags', $_POST );
+        $posted     = array_map( 'trim', $posted );
+        $user_id    = get_current_user_id();
+
+        $first_name = $posted['meetup_fname'];
+        $last_name  = $posted['meetup_lname'];
+        $phone      = $posted['meetup_phone'];
+        $seat       = (int) $posted['meetup-fb-join-seat'];
+        $meetup_id  = (int) $posted['meetup_id'];
+
+        if ( empty( $phone ) || empty( $first_name ) || empty( $last_name ) ) {
+            wp_send_json_error( array(
+                'type'    => 'error',
+                'message' => __( 'Please complete the required fields', 'meetup' )
+            ) );
+        }
+
+        // update user meta info
+        $this->update_user_meta( $user_id );
 
         // may be trying to book more than permitted?
         $this->check_booking_limit( $meetup_id, $seat );
@@ -226,8 +256,6 @@ class WeDevs_Meetup_Ajax {
         $email      = $posted['email'];
         $first_name = $posted['first_name'];
         $last_name  = $posted['last_name'];
-        $meetup_id  = (int) $posted['meetup_id'];
-        $seat       = (int) $posted['seat'];
 
         $user = get_user_by( 'email', $email );
 
@@ -236,16 +264,15 @@ class WeDevs_Meetup_Ajax {
             // lets auto login the user
             wp_set_auth_cookie( $user->ID, true );
 
-            // do the booking process
-            $this->do_booking( $user->ID, $meetup_id, $seat );
-
         } else {
 
             //register the user
             // register the user
             if ( $user_id = $this->register_user( $email, $first_name, $last_name ) ) {
 
-                $this->do_booking( $user_id, $meetup_id, $seat );
+                // setup some metadata
+                update_user_meta( $user_id, '_fb_id', $posted['id'] );
+                update_user_meta( $user_id, '_fb_link', $posted['link'] );
 
             } else {
                 wp_send_json_error( array(
@@ -256,6 +283,36 @@ class WeDevs_Meetup_Ajax {
         }
 
         exit;
+    }
+
+    /**
+     * Update user meta information
+     *
+     * @param  int $user_id
+     * @return void
+     */
+    function update_user_meta( $user_id ) {
+        $posted   = $_POST;
+        $fname    = isset( $posted['meetup_fname'] ) ? strip_tags( $posted['meetup_fname'] ) : '';
+        $lname    = isset( $posted['meetup_lname'] ) ? strip_tags( $posted['meetup_lname'] ) : '';
+        $phone    = isset( $posted['meetup_phone'] ) ? $posted['meetup_phone'] : '';
+        $site_url = isset( $posted['meetup_site_url'] ) ? $posted['meetup_site_url'] : '';
+        $twitter  = isset( $posted['meetup_twitter'] ) ? $posted['meetup_twitter'] : '';
+        $career   = isset( $posted['meetup_career'] ) ? $posted['meetup_career'] : '';
+
+        wp_update_user( array(
+            'ID'           => $user_id,
+            'first_name'   => $fname,
+            'last_name'    => $lname,
+            'display_name' => $fname . ' ' . $lname,
+            'user_url'     => $site_url
+        ) );
+
+        update_user_meta( $user_id, 'phone', $phone );
+        update_user_meta( $user_id, 'twitter', $twitter );
+        update_user_meta( $user_id, 'career', $career );
+
+        do_action( 'meetup_update_user_meta', $user_id, $posted );
     }
 }
 

@@ -13,21 +13,24 @@
         section.siblings('section').slideDown('fast');
     });
 
-    $('form#meetup-site-join-form').on('submit', function(e) {
+    $('form#meetup-join-form').on('submit', function(e) {
         e.preventDefault();
 
         var form = $(this),
             data = form.serialize();
 
-        if ( $('#meetup_fname').val() === '' || $('#meetup_lname').val() === '' ) {
+        if ( $('#meetup_fname').val() === '' || $('#meetup_lname').val() === '' || $('#meetup_phone').val() === '' ) {
             return false;
         }
 
         form.find('input[type="submit"]').attr('disabled', 'disabled');
 
+        form.block({ message: null, overlayCSS: { background: '#fff url(' + meetup.ajax_loader + ') no-repeat center', opacity: 0.6 } });
+
         $.post(meetup.ajaxurl, data, function(resp) {
 
             form.find('input[type="submit"]').removeAttr('disabled');
+            form.unblock();
 
             if ( resp.data.type === 'error' ) {
                 alert( resp.data.message );
@@ -39,26 +42,12 @@
                 form.remove();
                 alert( resp.data.message );
                 window.location.reload();
-            }
-        });
-    });
 
-    $('form#meetup-join-form').on('submit', function(e) {
-        e.preventDefault();
-
-        var form = $(this),
-            data = form.serialize();
-
-        form.find('input[type="submit"]').attr('disabled', 'disabled');
-
-        $.post(meetup.ajaxurl, data, function(resp) {
-
-            form.find('input[type="submit"]').removeAttr('disabled');
-
-            if ( resp.success === true ) {
+            } else if ( resp.success === true ) {
                 form.remove();
                 alert( resp.data.message );
                 window.location.reload();
+
             } else {
                 alert( resp.data.message );
             }
