@@ -5,6 +5,7 @@ $from       = get_post_meta( $post_id, 'from', true );
 $to         = get_post_meta( $post_id, 'to', true );
 $capacity   = get_post_meta( $post_id, 'capacity', true );
 $address    = get_post_meta( $post_id, 'address', true );
+$location   = get_post_meta( $post_id, 'location', true );
 $reg_starts = get_post_meta( $post_id, 'reg_starts', true );
 $reg_ends   = get_post_meta( $post_id, 'reg_ends', true );
 $book_limit = get_post_meta( $post_id, 'book_limit', true );
@@ -185,19 +186,42 @@ if ( date( 'dmY', $from ) !== date( 'dmY', $to ) ) {
                         </div>
                     </div>
                 </li>
-                <li>
-                    <div class="meetup-icon">
-                        <i class="fa fa-map-marker"></i>
-                    </div>
 
-                    <div class="meetup-details">
-                        <address>
-                            <?php echo nl2br( $address ); ?>
-                        </address>
+                <?php if ( $address ) { ?>
+                    <li>
+                        <div class="meetup-icon">
+                            <i class="fa fa-map-marker"></i>
+                        </div>
 
-                        <div class="meetup-map"></div>
-                    </div>
-                </li>
+                        <div class="meetup-details">
+                            <address>
+                                <?php echo nl2br( $address ); ?>
+                            </address>
+
+                            <?php if ( $location ) { ?>
+                                <div id="meetup-map"></div>
+
+                                <script type="text/javascript">
+                                    jQuery(function($){
+                                        var curpoint = new google.maps.LatLng(<?php echo $location['lat']; ?>, <?php echo $location['long']; ?>);
+
+                                        var gmap = new google.maps.Map( $('#meetup-map')[0], {
+                                            center: curpoint,
+                                            zoom: 17,
+                                            mapTypeId: window.google.maps.MapTypeId.ROADMAP
+                                        });
+
+                                        var marker = new window.google.maps.Marker({
+                                            position: curpoint,
+                                            map: gmap,
+                                            draggable: true
+                                        });
+                                    });
+                                </script>
+                            <?php } ?>
+                        </div>
+                    </li>
+                <?php } ?>
             </ul>
         </div><!-- .meetup-col-right -->
     </div>

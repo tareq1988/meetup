@@ -298,6 +298,7 @@
 }
 .meetup-content-wrap .meetup-col-right .meetup-details {
   float: left;
+  width: 90%;
 }
 .meetup-content-wrap .meetup-col-right .meetup-add-calendar-wrap {
   display: none;
@@ -493,6 +494,12 @@ table.meetup-table > thead:first-child > tr:first-child > td {
 }
 table.meetup-table > tbody + tbody {
   border-top: 2px solid #ddd;
+}
+#meetup-map {
+  width: 100%;
+  height: 250px;
+  margin: 20px 0;
+  border: 1px solid #DDD;
 }
 @media (max-width: 480px) {
   .meetup-entry-header .meetup-cover-wrap {
