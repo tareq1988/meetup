@@ -44,7 +44,8 @@
                     <th width="25%"><?php _e( 'Name', 'meetup' ); ?></th>
                     <th><?php _e( 'Email', 'meetup' ); ?></th>
                     <th><?php _e( 'Phone', 'meetup' ); ?></th>
-                    <th><?php _e( 'No. of Seat', 'meetup' ); ?></th>
+                    <th><?php _e( 'Seat', 'meetup' ); ?></th>
+                    <th><?php _e( 'Profession', 'meetup' ); ?></th>
                     <th><?php _e( 'Status', 'meetup' ); ?></th>
                     <th><?php _e( 'Registered', 'meetup' ); ?></th>
                     <th width="15%"><?php _e( 'Action', 'meetup' ); ?></th>
@@ -72,6 +73,9 @@
                         </td>
                         <td>
                             <?php echo $user->seat; ?>
+                        </td>
+                        <td>
+                            <?php echo get_user_meta( $user->user_id, 'career', true ); ?>
                         </td>
                         <td>
                             <?php echo meetup_get_seat_status( $user->status ); ?>
