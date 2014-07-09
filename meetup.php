@@ -3,7 +3,7 @@
 Plugin Name: Meetup
 Plugin URI: http://wedevs.com/plugin/meetup
 Description: Create meetup events
-Version: 0.1.2
+Version: 0.1
 Author: Tareq Hasan
 Author URI: http://tareq.wedevs.com/
 License: GPL2
