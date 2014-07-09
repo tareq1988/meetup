@@ -184,7 +184,6 @@ class WeDevs_Meetup {
 
         wp_enqueue_script( 'meetup-filterable', $asset_url . 'js/jquery.table-filter.min.js', array( 'jquery' ), false, true );
         wp_enqueue_script( 'meetup-tiptip', $asset_url . 'js/jquery.tipTip.min.js', array( 'jquery' ), false, true );
-        wp_enqueue_script( 'meetup-admin', $asset_url . 'js/admin.js', array( 'jquery' ), false, true );
     }
 
     /**
