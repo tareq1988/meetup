@@ -10,7 +10,7 @@
 function meetup_has_user_booked( $user_id, $meetup_id ) {
     global $wpdb;
 
-    $sql = "SELECT * FROM {$wpdb->prefix}meetup_users WHERE meetup_id = %d AND user_id = %d AND status = 1";
+    $sql = "SELECT * FROM {$wpdb->prefix}meetup_users WHERE meetup_id = %d AND user_id = %d";
     $result = $wpdb->get_row( $wpdb->prepare( $sql, $meetup_id, $user_id ) );
 
     if ( $result ) {
@@ -102,7 +102,7 @@ function meetup_num_booked_seat( $meetup_id ) {
     $count = wp_cache_get( $cache_key, 'meetup' );
 
     if ( false === $count ) {
-        $sql   = "SELECT SUM(seat) FROM {$wpdb->prefix}meetup_users WHERE meetup_id = %d AND status = 1";
+        $sql   = "SELECT SUM(seat) FROM {$wpdb->prefix}meetup_users WHERE meetup_id = %d";
         $count = (int) $wpdb->get_var( $wpdb->prepare( $sql, $meetup_id ) );
 
         wp_cache_set( $cache_key, $count, 'meetup' );
