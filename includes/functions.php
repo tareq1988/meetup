@@ -346,9 +346,9 @@ add_action( 'template_redirect', 'meetup_generate_ical' );
  * @return boolean
  */
 function meetup_is_registration_started( $meetup_id ) {
-    $reg_starts = get_post_meta( $meetup_id, 'reg_starts', true );
+    $reg_starts = (int) get_post_meta( $meetup_id, 'reg_starts', true );
 
-    return time() > $reg_starts;
+    return current_time( 'timestamp' ) > $reg_starts;
 }
 
 /**
@@ -358,9 +358,9 @@ function meetup_is_registration_started( $meetup_id ) {
  * @return boolean
  */
 function meetup_is_registration_finished( $meetup_id ) {
-    $reg_ends = get_post_meta( $meetup_id, 'reg_ends', true );
+    $reg_ends = (int) get_post_meta( $meetup_id, 'reg_ends', true );
 
-    return time() > $reg_ends;
+    return current_time( 'timestamp' ) > $reg_ends;
 }
 
 /**
