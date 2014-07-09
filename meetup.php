@@ -149,7 +149,7 @@ class WeDevs_Meetup {
          * All styles goes here
          */
         wp_enqueue_style( 'fontawesome', $asset_url . 'css/font-awesome.min.css', false, date( 'Ymd' ) );
-        wp_enqueue_style( 'meetup-styles', $asset_url . 'css/style.css', false, '2' );
+        wp_enqueue_style( 'meetup-styles', $asset_url . 'css/style.css', false, '3' );
 
         if ( is_singular( 'meetup' ) ) {
             wp_enqueue_script( 'google-maps', '//maps.google.com/maps/api/js?sensor=false' );
