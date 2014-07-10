@@ -1,0 +1,3 @@
+[submodule "lib/Custom-Meta-Boxes"]
+	path = lib/Custom-Meta-Boxes
+	url = https://github.com/humanmade/Custom-Meta-Boxes.git
