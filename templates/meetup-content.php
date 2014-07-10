@@ -105,15 +105,17 @@ if ( date( 'dmY', $from ) !== date( 'dmY', $to ) ) {
 
                                 <?php if ( $has_booked ) { ?>
 
-                                    <p>
-                                        <?php printf( __( 'Congratulations! You\'ve booked %d seat(s).', 'meetup' ), $has_booked->seat ); ?>
-                                    </p>
+                                    <div class="meetup-joined">
+                                        <p>
+                                            <?php printf( __( 'Congratulations! You\'ve booked %d seat(s).', 'meetup' ), $has_booked->seat ); ?>
+                                        </p>
 
-                                    <p>
-                                        <a href="#" class="meetup-cancel-booking" data-meetup-id="<?php echo $post_id; ?>" data-booking-id="<?php echo $has_booked->id; ?>" data-confirm="<?php esc_attr_e( 'Are you sure to cancel the booking?', 'meetup' ); ?>">
-                                            <?php _e( 'Cancel your booking?', 'meetup' ); ?>
-                                        </a>
-                                    </p>
+                                        <p>
+                                            <a href="#" class="meetup-cancel-booking" data-meetup-id="<?php echo $post_id; ?>" data-booking-id="<?php echo $has_booked->id; ?>" data-confirm="<?php esc_attr_e( 'Are you sure to cancel the booking?', 'meetup' ); ?>">
+                                                <?php _e( 'Cancel your booking?', 'meetup' ); ?>
+                                            </a>
+                                        </p>
+                                    </div>
 
                                 <?php } ?>
 
