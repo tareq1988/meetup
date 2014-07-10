@@ -195,7 +195,7 @@ class WeDevs_Meetup {
 
         if ( is_admin() ) {
 
-            if ( ! function_exists( 'CMB_Field' ) ) {
+            if ( ! function_exists( 'cmb_init' ) ) {
                 define( 'CMB_URL', $this->plugin_url() . '/lib/Custom-Meta-Boxes' );
 
                 require_once dirname( __FILE__ ) . '/lib/Custom-Meta-Boxes/custom-meta-boxes.php';
