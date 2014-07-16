@@ -1,3 +1,5 @@
+<?php do_action( 'meetup_before_header' ); ?>
+
 <header class="meetup-entry-header">
     <div class="meetup-cover-wrap">
         <div class="meetup-cover">
@@ -60,3 +62,5 @@
     </div><!-- .meetup-nav-wrap -->
 
 </header><!-- .meetup-entry-header -->
+
+<?php do_action( 'meetup_after_header' ); ?>

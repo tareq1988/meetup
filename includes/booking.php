@@ -208,7 +208,8 @@ function meetup_get_seat_statuses() {
     $statuses = array(
         1 => __( 'Booked', 'meetup' ),
         2 => __( 'Confirmed', 'meetup' ),
-        3 => __( 'Checked In', 'meetup' )
+        3 => __( 'Checked In', 'meetup' ),
+        4 => __( 'Awaiting Confirmation', 'meetup' )
     );
 
     return apply_filters( 'meetup_seat_statuses', $statuses );

@@ -20,10 +20,15 @@ class WeDevs_Meetup_Admin {
     }
 
     function admin_init() {
+
         $sections = array(
             array(
                 'id' => 'meetup_facebook',
                 'title' => __( 'Facebook API', 'meetup' )
+            ),
+            array(
+                'id' => 'meetup_email',
+                'title' => __( 'Email Settings', 'meetup' )
             ),
         );
 
@@ -35,7 +40,22 @@ class WeDevs_Meetup_Admin {
                     'desc' => __( 'Enter the app id from your facebook application', 'meetup' ),
                     'type' => 'text',
                 ),
-            )
+            ),
+            'meetup_email' => array(
+                array(
+                    'name' => 'conf_subject',
+                    'label' => __( 'Email Subject', 'meetup' ),
+                    'desc' => __( 'The subject of the confirmation email', 'meetup' ),
+                    'type' => 'text',
+                    'default' => __( 'Confirm Your Booking', 'meetup' )
+                ),
+                array(
+                    'name' => 'conf_body',
+                    'label' => __( 'Email Content', 'meetup' ),
+                    'type' => 'wysiwyg',
+                    'default' => meetup_admin_conf_mail_default_content()
+                ),
+            ),
         );
 
         //set the settings

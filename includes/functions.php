@@ -479,3 +479,93 @@ function meetup_signup_fields( $meetup_id = 0 ) {
     </form>
     <?php
 }
+
+/**
+ * Get an option from the settings api
+ *
+ * @param  string $option
+ * @param  string $section
+ * @param  string $default
+ * @return mixed
+ */
+function meetup_get_option( $option, $section, $default = '' ) {
+    $values = get_option( $section );
+
+    if ( isset( $values[$option] ) ) {
+        return $values[$option];
+    }
+
+    return $default;
+}
+
+/**
+ * Handle actions from email link
+ *
+ * @return void
+ */
+function meetup_handle_email_action() {
+    $action = isset( $_GET['action'] ) ? $_GET['action'] : '';
+
+    if ( ! in_array( $action, array( 'meetup_confirm', 'meetup_cancel' ) ) ) {
+        return;
+    }
+
+    $uid = isset( $_GET['uid'] ) ? intval( $_GET['uid'] ) : 0;
+    $mid = isset( $_GET['mid'] ) ? intval( $_GET['mid'] ) : 0;
+    $bid = isset( $_GET['bid'] ) ? intval( $_GET['bid'] ) : 0;
+    $key = isset( $_GET['key'] ) ? $_GET['key'] : 0;
+
+    if ( $uid && $mid && $key ) {
+        $hash = get_user_meta( $uid, '_meetup_email_hash', true );
+
+        if ( $hash == $key ) {
+            delete_user_meta( $uid, '_meetup_email_hash' );
+
+            if ( $action == 'meetup_confirm' ) {
+                meetup_seat_change_status( $bid, 2 ); // set status to booked
+                $redirect_url = add_query_arg( array( 'msg' => 'meetup_confirmed' ), get_permalink( $mid ) );
+            } else if ( $action == 'meetup_cancel' ) {
+                meetup_cancel_seat( $uid, $mid, $bid );
+                $redirect_url = add_query_arg( array( 'msg' => 'meetup_cancelled' ), get_permalink( $mid ) );
+            }
+
+            wp_redirect( $redirect_url );
+            exit;
+        }
+    }
+}
+
+add_action( 'init', 'meetup_handle_email_action' );
+
+/**
+ * Show information message for email confirmation
+ *
+ * @return void
+ */
+function meetup_header_show_conf_message() {
+    $action = isset( $_GET['msg'] ) ? $_GET['msg'] : '';
+
+    if ( ! in_array( $action, array( 'meetup_confirmed', 'meetup_cancelled' ) ) ) {
+        return;
+    }
+
+    $message = '';
+
+    switch ($action) {
+        case 'meetup_confirmed':
+            $message = __( 'Congrats! Your booking has been confirmed.', 'meetup' );
+            break;
+
+        case 'meetup_cancelled':
+            $message = __( 'Your booking has been cancelled!', 'meetup' );
+            break;
+    }
+
+    if ( ! empty( $message ) ) {
+        echo '<div class="meetup-message">';
+        echo '<h2>' . $message . '</h2>';
+        echo '</div>';
+    }
+}
+
+add_action( 'meetup_before_header', 'meetup_header_show_conf_message' );
