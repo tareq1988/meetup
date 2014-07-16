@@ -528,10 +528,12 @@ function meetup_handle_email_action() {
                 meetup_cancel_seat( $uid, $mid, $bid );
                 $redirect_url = add_query_arg( array( 'msg' => 'meetup_cancelled' ), get_permalink( $mid ) );
             }
-
-            wp_redirect( $redirect_url );
-            exit;
+        } else {
+            $redirect_url = add_query_arg( array( 'msg' => 'hash_error' ), get_permalink( $mid ) );
         }
+
+        wp_redirect( $redirect_url );
+        exit;
     }
 }
 
@@ -545,7 +547,7 @@ add_action( 'init', 'meetup_handle_email_action' );
 function meetup_header_show_conf_message() {
     $action = isset( $_GET['msg'] ) ? $_GET['msg'] : '';
 
-    if ( ! in_array( $action, array( 'meetup_confirmed', 'meetup_cancelled' ) ) ) {
+    if ( ! in_array( $action, array( 'meetup_confirmed', 'meetup_cancelled', 'hash_error' ) ) ) {
         return;
     }
 
@@ -558,6 +560,10 @@ function meetup_header_show_conf_message() {
 
         case 'meetup_cancelled':
             $message = __( 'Your booking has been cancelled!', 'meetup' );
+            break;
+
+        case 'hash_error':
+            $message = __( 'Hash not found! May be you\'ve already clicked the link before.', 'meetup' );
             break;
     }
 
