@@ -17,6 +17,10 @@ Create local meetup events
 
 You can configure how many seats can be booked by each user. Users can signup by using Facebook connect or your sites registration system, which takes a few second.
 
+## Documentation
+
+The detailed documentation can be [found here] (/documentation.md)
+
 ## Contribute
 If you want to contribute on this project, you are more than welcome.
 
