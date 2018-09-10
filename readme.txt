@@ -3,7 +3,7 @@ Contributors: tareq1988
 Donate link: http://tareq.wedevs.com/donate/
 Tags: meetup, event, meeting, seminar, summit, venue, workshop, conference, class
 Requires at least: 3.6
-Tested up to: 3.9.1
+Tested up to: 4.9.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
